@@ -3,10 +3,11 @@ package com.example.hercules.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hercules.domain.models.Sensor
-import com.example.hercules.domain.use_case.SensorUseCases
+import com.example.hercules.domain.use_case.sensors.SensorUseCases
 import com.example.hercules.domain.utils.Order
 import com.example.hercules.domain.utils.SensorOrder
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

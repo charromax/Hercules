@@ -1,4 +1,4 @@
-package com.example.hercules.domain.use_case
+package com.example.hercules.domain.use_case.sensors
 
 
 import com.example.hercules.domain.models.Sensor

@@ -7,3 +7,5 @@ data class Message(
     val topic: String,
     val message: String
 )
+
+class ConnectionLostException(error: String) : Exception(error)

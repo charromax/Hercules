@@ -13,8 +13,14 @@ import androidx.core.app.NotificationCompat.GROUP_ALERT_CHILDREN
 import androidx.core.app.NotificationManagerCompat
 import com.example.hercules.R
 import com.example.hercules.ui.MainActivity
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MqttService : Service(), MqttClientActions {
+    @Inject
+    lateinit var client: HerculesMqttClient
+
     val TAG = "MQTT_SERVICE"
     val CHANNEL_ID = "HERCULES_CHANNEL"
     val NOTIFICATION_ID = 213497586
@@ -25,7 +31,7 @@ class MqttService : Service(), MqttClientActions {
 
     override fun onCreate() {
         super.onCreate()
-        HerculesMqttClient.listener = this
+        client.listener = this
         notification = buildNotification("Hercules Vigila", "Sistema Online", true)
     }
 
@@ -61,7 +67,6 @@ class MqttService : Service(), MqttClientActions {
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        if (!HerculesMqttClient.connectionStatus) HerculesMqttClient.connect(applicationContext, testTopics)
         startForeground(NOTIFICATION_ID, notification)
         return START_NOT_STICKY
     }
@@ -71,47 +76,10 @@ class MqttService : Service(), MqttClientActions {
     }
 
     override fun onDestroy() {
-        HerculesMqttClient.disconnect()
         super.onDestroy()
     }
 
-    override fun onConnected() {
-        HerculesMqttClient.resetRetries()
-    }
-
-    override fun onConnectionRefused(retries: Int) {
-        attemptRetryConnection(retries)
-    }
-
-    private fun attemptRetryConnection(retries: Int) {
-        if (retries < 5) {
-            HerculesMqttClient.incrementRetries()
-            HerculesMqttClient.connect(applicationContext, testTopics)
-        }
-    }
-
-    override fun onDisconnect() {
-        Log.i(TAG, "onDisconnect: DISCONNECTED")
-    }
-
-    override fun onConnectionLost(retries: Int) {
-        attemptRetryConnection(retries)
-    }
-
-    override fun onError(error: String?) {
-        Log.i(TAG, "onDisconnect: DISCONNECTED")
-    }
-
-    override fun onSubcriptionSuccess(topic: String) {
-        Log.i(TAG, "onSubcriptionSuccess: $topic")
-        HerculesMqttClient.receiveMessages()
-    }
-
-    override fun onUnsubscribed(topic: String) {
-        Log.i(TAG, "onUnsubscribed: $topic")
-    }
-
-    override fun onMessageReceived(message: String) {
+    fun onMessageReceived(message: String) {
         NotificationManagerCompat.from(applicationContext)
             .notify(NOTIFICATION_ID, buildNotification("ALerta recibida", message))
     }

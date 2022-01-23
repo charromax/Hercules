@@ -18,7 +18,10 @@ import androidx.compose.ui.Modifier
 import com.example.hercules.data.network.mqtt.MqttService
 import com.example.hercules.ui.theme.HerculesTheme
 import com.example.hercules.ui.theme.Shapes
+import android.app.ActivityManager
+import android.util.Log
 
+const val TAG= "MAIN"
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +33,26 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+        checkServiceRunning()
+    }
+
+    private fun checkServiceRunning() {
+        if (isServiceRunningInForeground(this, MqttService::class.java)) {
+            Log.i(TAG, "checkServiceRunning: its alive!")
+            stopMqttService(applicationContext)
+        } else Log.i(TAG, "checkServiceRunning: its dead...")
+    }
+
+    private fun isServiceRunningInForeground(context: Context, serviceClass: Class<*>): Boolean {
+        val manager = context.getSystemService(ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+            if (serviceClass.name == service.service.className) {
+                if (service.foreground) {
+                    return true
+                }
+            }
+        }
+        return false
     }
 }
 

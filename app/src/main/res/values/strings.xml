@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Hercules</string>
+    <string name="rejected_connection">Conexión al broker rechazada</string>
+    <string name="connection_success">Cuidado, Hercules vigila</string>
 </resources>

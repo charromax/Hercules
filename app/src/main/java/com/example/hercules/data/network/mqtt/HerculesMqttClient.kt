@@ -4,15 +4,14 @@ import android.content.Context
 import android.util.Log
 import org.eclipse.paho.android.service.MqttAndroidClient
 import org.eclipse.paho.client.mqttv3.*
-import org.eclipse.paho.client.mqttv3.MqttException
 
 
-object HerculesMqttClient {
-    const val TAG = "MQTTCLIENT"
-    const val BROKER_URL = "tcp://br5.maqiatto.com:1883"
-    const val USERNAME = "charr0max"
-    const val PASSWORD = "Mg412115"
-    const val ENCODING = "UTF-8"
+class HerculesMqttClient {
+    val TAG = "MQTTCLIENT"
+    val BROKER_URL = "tcp://br5.maqiatto.com:1883"
+    val USERNAME = "charr0max"
+    val PASSWORD = "Mg412115"
+    val ENCODING = "UTF-8"
 
     var mqttAndroidClient: MqttAndroidClient? = null
     private var clientID = ""
@@ -23,19 +22,19 @@ object HerculesMqttClient {
     /**
      * attempt connection to broker
      */
-    fun connect(context: Context, topics: List<String>) {
+    fun connect(context: Context, topics: List<String>, connectionListener: MqttClientActions.Connection?, subListener: MqttClientActions.Subscription) {
         try {
-        clientID = MqttClient.generateClientId()
-        mqttAndroidClient = MqttAndroidClient(context.applicationContext, BROKER_URL, clientID)
+            clientID = MqttClient.generateClientId()
+            mqttAndroidClient = MqttAndroidClient(context.applicationContext, BROKER_URL, clientID)
             val token = mqttAndroidClient?.connect(createMqttConnectOptions())
             token?.actionCallback = object : IMqttActionListener {
                 override fun onSuccess(asyncActionToken: IMqttToken) {
                     Log.i("Connection", "success ")
                     connectionStatus = true
                     // Give your callback on connection established here
-                    listener?.onConnected()
+                    connectionListener?.onConnected()
                     topics.forEach {
-                        if (it.isNotEmpty()) subscribe(it)
+                        if (it.isNotEmpty()) subscribe(it, subListener)
                     }
                 }
 
@@ -44,13 +43,13 @@ object HerculesMqttClient {
                     Log.i("Connection", "failure")
                     // Give your callback on connection failure here
                     exception.printStackTrace()
-                    listener?.onConnectionRefused(retries)
+                    connectionListener?.onConnectionRefused(retries)
                 }
             }
         } catch (e: MqttException) {
             // Give your callback on connection failure here
             e.printStackTrace()
-            listener?.onConnectionRefused(retries)
+            connectionListener?.onConnectionRefused(retries)
         }
     }
 
@@ -65,7 +64,7 @@ object HerculesMqttClient {
     /**
      * subscribe to topic
      */
-    fun subscribe(topic: String) {
+    fun subscribe(topic: String, listener: MqttClientActions.Subscription?) {
         val qos = 2 // Mention your qos value
         try {
             mqttAndroidClient?.subscribe(topic, qos, null, object : IMqttActionListener {
@@ -91,7 +90,7 @@ object HerculesMqttClient {
     /**
      * end subscription for topic
      */
-    fun unSubscribe(topic: String) {
+    fun unSubscribe(topic: String, listener: MqttClientActions.Unsubscription?) {
         try {
             val unsubToken = mqttAndroidClient?.unsubscribe(topic)
             unsubToken?.actionCallback = object : IMqttActionListener {
@@ -114,7 +113,7 @@ object HerculesMqttClient {
     /**
      * get messages on topics we are subscribed to
      */
-    fun receiveMessages() {
+    fun receiveMessages(listener: MqttClientActions.Message?) {
         mqttAndroidClient?.setCallback(object : MqttCallback {
             override fun connectionLost(cause: Throwable?) {
                 connectionStatus = false
@@ -127,7 +126,7 @@ object HerculesMqttClient {
                     val data = String(message.payload, charset(ENCODING))
                     // data is the desired received message
                     // Give your callback on message received here
-                    listener?.onMessageReceived(data)
+                    listener?.onMessageReceived(data, topic)
                 } catch (e: Exception) {
                     // Give your callback on error here
                     listener?.onError(e.message)
@@ -144,7 +143,7 @@ object HerculesMqttClient {
     /**
      * publish message on [topic], pass [onError] for user feedback
      */
-    fun publish(topic: String, data: String, onError: ((String?) -> Unit)?) {
+    fun publish(topic: String, data: String, onError: (String) -> Unit) {
         val encodedPayload: ByteArray
         try {
             encodedPayload = data.toByteArray(charset("UTF-8"))
@@ -154,18 +153,18 @@ object HerculesMqttClient {
             mqttAndroidClient?.publish(topic, message)
         } catch (e: Exception) {
             Log.e(TAG, "publish: ERROR", e)
-            onError?.invoke(e.message)
+            onError?.invoke(e.message.toString())
         } catch (e: MqttException) {
             // Give Callback on error here
             Log.e(TAG, "publish: ERROR", e)
-            onError?.invoke(e.message)
+            onError?.invoke(e.message.toString())
         }
     }
 
     /**
      * disconnect from broker
      */
-    fun disconnect() {
+    fun disconnect(listener: MqttClientActions.Disconnect?) {
         try {
             val disconToken = mqttAndroidClient?.disconnect()
             disconToken?.actionCallback = object : IMqttActionListener {
@@ -189,6 +188,7 @@ object HerculesMqttClient {
             // Give Callback on error here
             listener?.onError(e.message)
         }
+
     }
 
     /**
@@ -205,17 +205,30 @@ object HerculesMqttClient {
 }
 
 interface MqttClientActions {
+    interface Connection {
+        fun onConnected()
+        fun onConnectionRefused(retries: Int)
+    }
 
-    fun onConnected()
-    fun onConnectionRefused(retries: Int)
-    fun onDisconnect()
-    fun onConnectionLost(retries: Int)
+    interface Subscription {
+        fun onError(error: String?)
+        fun onSubcriptionSuccess(topic: String)
+    }
 
-    fun onError(error: String?)
+    interface Unsubscription {
+        fun onUnsubscribed(topic: String)
+        fun onError(error: String?)
+    }
 
-    fun onSubcriptionSuccess(topic: String)
-    fun onUnsubscribed(topic: String)
+    interface Message {
+        fun onError(error: String?)
+        fun onConnectionLost(retries: Int)
+        fun onMessageReceived(message: String, topic: String)
+    }
 
-    fun onMessageReceived(message: String)
+    interface Disconnect {
+        fun onDisconnect()
+        fun onError(error: String?)
+    }
 }
 
