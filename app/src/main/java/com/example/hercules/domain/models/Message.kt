@@ -9,3 +9,4 @@ data class Message(
 )
 
 class ConnectionLostException(error: String) : Exception(error)
+class InvalidMessageException(error: String) : Exception(error)

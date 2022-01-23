@@ -1,4 +1,4 @@
-package com.example.hercules.domain.utils
+package com.example.hercules.utils
 
 sealed class Order {
     object Ascending: Order()

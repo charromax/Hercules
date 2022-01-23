@@ -1,4 +1,4 @@
-package com.example.hercules.domain.utils
+package com.example.hercules.utils
 
 sealed class Result<T>
 data class Success<T>(val value: T) : Result<T>()

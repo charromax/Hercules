@@ -3,8 +3,8 @@ package com.example.hercules.domain.use_case.sensors
 
 import com.example.hercules.domain.models.Sensor
 import com.example.hercules.domain.repository.SensorsRepository
-import com.example.hercules.domain.utils.Order
-import com.example.hercules.domain.utils.SensorOrder
+import com.example.hercules.utils.Order
+import com.example.hercules.utils.SensorOrder
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

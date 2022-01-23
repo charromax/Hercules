@@ -2,8 +2,7 @@ package com.example.hercules.domain.repository
 
 import android.content.Context
 import com.example.hercules.domain.models.Message
-import com.example.hercules.domain.utils.Result
-import kotlinx.coroutines.flow.Flow
+import com.example.hercules.utils.Result
 
 interface MqttRepository {
     suspend fun connect(context: Context, topics: List<String>): Result<String>

@@ -6,9 +6,9 @@ import com.example.hercules.data.network.mqtt.HerculesMqttClient
 import com.example.hercules.data.network.mqtt.MqttClientActions
 import com.example.hercules.domain.models.ConnectionLostException
 import com.example.hercules.domain.models.Message
-import com.example.hercules.domain.utils.Failure
-import com.example.hercules.domain.utils.Result
-import com.example.hercules.domain.utils.Success
+import com.example.hercules.utils.Failure
+import com.example.hercules.utils.Result
+import com.example.hercules.utils.Success
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine

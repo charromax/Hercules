@@ -2,7 +2,7 @@ package com.example.hercules.ui.home
 
 
 import com.example.hercules.domain.models.Sensor
-import com.example.hercules.domain.utils.SensorOrder
+import com.example.hercules.utils.SensorOrder
 
 sealed class HomeEvents {
     data class OnOrderChange(val sensorOrder: SensorOrder): HomeEvents()
