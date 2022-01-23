@@ -19,5 +19,6 @@ class GetMessageUseCase @Inject constructor(
                 is Success -> emit(result.value)
             }
         }
+
     }
 }
