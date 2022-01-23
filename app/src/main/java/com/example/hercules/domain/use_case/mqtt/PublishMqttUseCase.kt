@@ -14,6 +14,8 @@ class PublishMqttUseCase @Inject constructor(
 ) {
     @Throws(Exception::class)
     suspend operator fun invoke(topic: String, data: String): Message {
+        if (topic.isEmpty()) throw Exception("Topic vacio")
+        if (data.isEmpty()) throw Exception("Mensaje vacio")
         when (val result = repo.publish(topic, data)) {
             is Failure -> throw result.error
             is Success -> return Message(topic = topic, message = data)
