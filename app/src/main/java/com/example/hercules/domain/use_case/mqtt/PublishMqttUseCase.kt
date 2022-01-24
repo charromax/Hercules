@@ -1,10 +1,13 @@
+/*
+ * Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
+ */
+
 package com.example.hercules.domain.use_case.mqtt
 
-import com.example.hercules.domain.models.InvalidMessageException
-import com.example.hercules.domain.models.Message
+import com.example.hercules.domain.models.HerculesExceptions
+import com.example.hercules.domain.models.HerculesExceptions.InvalidMessageException
 import com.example.hercules.domain.repository.MqttRepository
-import com.example.hercules.utils.Failure
-import com.example.hercules.utils.Success
+import com.example.hercules.utils.Result
 import javax.inject.Inject
 
 /**
@@ -13,14 +16,10 @@ import javax.inject.Inject
 class PublishMqttUseCase @Inject constructor(
     private val repo: MqttRepository
 ) {
-    @Throws(Exception::class)
-    suspend operator fun invoke(topic: String, data: String): Message {
+    @Throws(HerculesExceptions::class)
+    suspend operator fun invoke(topic: String, data: String): Result<String> {
         if (topic.isEmpty()) throw InvalidMessageException("Topic vacio")
         if (data.isEmpty()) throw InvalidMessageException("Mensaje vacio")
-
-        when (val result = repo.publish(topic, data)) {
-            is Failure -> throw result.error
-            is Success -> return Message(topic = topic, message = data)
-        }
+        return repo.publish(topic, data)
     }
 }

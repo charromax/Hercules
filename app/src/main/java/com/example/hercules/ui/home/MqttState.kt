@@ -1,10 +1,15 @@
+/*
+ * Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
+ */
+
 package com.example.hercules.ui.home
 
 import com.example.hercules.domain.models.Message
-import java.lang.Exception
 
 data class MqttState(
-    val lastMessageReceived: Message?,
-    val lastMessageSent: Message?,
-    val error: Exception?
+    val isMqttConnected: Boolean = false,
+    val lastMessageReceived: Message? = null,
+    val lastMessageSent: Message? = null,
+    val snack: String? = null,
+    val error: Exception? = null
 )

@@ -1,4 +1,8 @@
-package com.example.hercules.di
+/*
+ * Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
+ */
+
+package com.example.hercules.domain.di
 
 import dagger.Module
 import dagger.Provides

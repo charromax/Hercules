@@ -1,10 +1,15 @@
+/*
+ * Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
+ */
+
 package com.example.hercules.domain.repository
 
 import android.content.Context
 import com.example.hercules.R
 import com.example.hercules.data.network.mqtt.HerculesMqttClient
 import com.example.hercules.data.network.mqtt.MqttClientActions
-import com.example.hercules.domain.models.ConnectionLostException
+import com.example.hercules.domain.models.HerculesExceptions.ConnectionLostException
+import com.example.hercules.domain.models.HerculesExceptions.UnableToConnectException
 import com.example.hercules.domain.models.Message
 import com.example.hercules.utils.Failure
 import com.example.hercules.utils.Result
@@ -69,6 +74,8 @@ class MqttRepositoryImpl @Inject constructor(private val client: HerculesMqttCli
                     if (retries < 5) {
                         client.incrementRetries()
                         cont.resume(Failure(ConnectionLostException("Reconectando...")))
+                    } else {
+                        cont.resume(Failure(UnableToConnectException("Error desconocido, conexión perdida")))
                     }
                 }
 

@@ -1,13 +1,19 @@
+/*
+ * Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
+ */
+
 package com.example.hercules.ui.home
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.hercules.domain.models.Message
 import com.example.hercules.domain.use_case.mqtt.MqttUseCases
+import com.example.hercules.utils.Failure
+import com.example.hercules.utils.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -15,7 +21,8 @@ import javax.inject.Inject
 class MqttViewModel @Inject constructor(
     private val mqttUseCases: MqttUseCases
 ) : ViewModel() {
-    private val _mqttState = MutableStateFlow<MqttState>(MqttState(null, null, null))
+
+    private val _mqttState = MutableStateFlow(MqttState())
     val mqttState: StateFlow<MqttState> = _mqttState
 
     fun onEvent(event: MqttEvents) {
@@ -26,47 +33,44 @@ class MqttViewModel @Inject constructor(
 
     private fun connect(context: Context, topics: List<String>) {
         viewModelScope.launch {
-            try {
-                mqttUseCases.connectMqttUseCase(context, topics)
-            } catch (e: Exception) {
-                updateErrorState(e)
+            when (val result = mqttUseCases.connectMqttUseCase(context, topics)) {
+                is Failure -> updateErrorState(result.error)
+                is Success -> {
+                    _mqttState.value =
+                        mqttState.value.copy(isMqttConnected = true, snack = result.value)
+                }
             }
         }
     }
 
     private fun disconnect() {
         viewModelScope.launch {
-            try {
-                mqttUseCases.disconnectMqttUseCase()
-            } catch (e: Exception) {
-                updateErrorState(e)
+            when (val result = mqttUseCases.disconnectMqttUseCase()) {
+                is Failure -> updateErrorState(result.error)
+                is Success -> _mqttState.value =
+                    mqttState.value.copy(isMqttConnected = false, snack = result.value)
             }
         }
     }
 
     private fun getMessages() {
-        try {
-            mqttUseCases.getMessageUseCase().onEach {
-                _mqttState.value = mqttState.value.copy(
-                    lastMessageReceived = it
+        viewModelScope.launch {
+            when (val result = mqttUseCases.getMessageUseCase()) {
+                is Failure -> updateErrorState(result.error)
+                is Success -> _mqttState.value = mqttState.value.copy(
+                    lastMessageReceived = result.value
                 )
             }
-        } catch (e: Exception) {
-            updateErrorState(e)
         }
     }
 
     private fun publish(topic: String, data: String) {
         viewModelScope.launch {
-            try {
-                _mqttState.value = mqttState.value.copy(
-                    lastMessageSent = mqttUseCases.publishMqttUseCase(
-                        topic,
-                        data
-                    )
+            when (val result = mqttUseCases.publishMqttUseCase(topic, data)) {
+                is Failure -> updateErrorState(result.error)
+                is Success -> _mqttState.value = mqttState.value.copy(
+                    lastMessageSent = Message(topic = topic, message = data)
                 )
-            } catch (e: Exception) {
-                updateErrorState(e)
             }
         }
     }

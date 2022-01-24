@@ -1,4 +1,8 @@
-package com.example.hercules.di
+/*
+ * Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
+ */
+
+package com.example.hercules.domain.di
 
 import android.app.Application
 import androidx.room.Room
@@ -18,7 +22,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import org.eclipse.paho.client.mqttv3.MqttClient
 import javax.inject.Singleton
 
 @Module
