@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
+ */
+
 package com.example.hercules.ui.home
 
 import androidx.lifecycle.ViewModel
@@ -19,9 +23,6 @@ import javax.inject.Inject
 class SensorsViewModel @Inject constructor(
     private val sensorUseCases: SensorUseCases
 ) : ViewModel() {
-
-    private val _allSensors = MutableStateFlow<List<Sensor>>(listOf())
-    val allSensors: StateFlow<List<Sensor>> = _allSensors
 
     private val _homeState = MutableStateFlow(HomeState())
     val homeState: StateFlow<HomeState> = _homeState
@@ -60,7 +61,7 @@ class SensorsViewModel @Inject constructor(
      */
     private fun restoreDeletedSensor() {
         viewModelScope.launch {
-            sensorUseCases.saveNewSensor(recentlyDeletedSensor ?: return@launch)
+            sensorUseCases.saveNewSensor(recentlyDeletedSensor?.toDBSensor() ?: return@launch)
             recentlyDeletedSensor = null
         }
     }

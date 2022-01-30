@@ -31,6 +31,9 @@ class MqttViewModel @Inject constructor(
         }
     }
 
+    /**
+     * connect to mqtt broker
+     */
     private fun connect(context: Context, topics: List<String>) {
         viewModelScope.launch {
             when (val result = mqttUseCases.connectMqttUseCase(context, topics)) {
@@ -43,6 +46,9 @@ class MqttViewModel @Inject constructor(
         }
     }
 
+    /**
+     * disconnect from mqtt broker
+     */
     private fun disconnect() {
         viewModelScope.launch {
             when (val result = mqttUseCases.disconnectMqttUseCase()) {

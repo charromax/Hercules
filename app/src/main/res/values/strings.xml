@@ -7,4 +7,6 @@
     <string name="rejected_connection">Conexión al broker rechazada</string>
     <string name="connection_success">Cuidado, Hercules vigila</string>
     <string name="empty_topics_list">Lista de topics vacía</string>
+    <string name="sensor_activated">Sensor Activado</string>
+    <string name="sensor_deactivated">Sensor Desactivado</string>
 </resources>

@@ -1,16 +1,30 @@
+/*
+ * Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
+ */
+
 package com.example.hercules.domain.models
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import org.joda.time.Instant
+import com.example.hercules.data.model.DBSensor
 
-@Entity(tableName = "sensors")
+
 data class Sensor(
-    @PrimaryKey val id: Int,
-    val createdAt: Long = Instant.now().millis,
+    val id: Int,
+    val createdAt: Long,
     val topic: String,
     val state: Boolean,
     val isActive: Boolean
-)
+) {
+    override fun toString(): String {
+        return "$id - $topic"
+    }
+
+    fun toDBSensor(): DBSensor {
+        return DBSensor(
+            id = id,
+            createdAt = createdAt,
+            topic = topic
+        )
+    }
+}
 
 class InvalidSensorException(message: String) : Exception(message)
