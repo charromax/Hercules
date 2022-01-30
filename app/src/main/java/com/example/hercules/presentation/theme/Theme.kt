@@ -1,4 +1,4 @@
-package com.example.hercules.ui.theme
+package com.example.hercules.presentation.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme

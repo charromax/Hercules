@@ -6,7 +6,7 @@ package com.example.hercules.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.hercules.domain.models.Sensor
+import com.example.hercules.domain.model.Sensor
 import org.joda.time.Instant
 
 @Entity(tableName = "sensors")

@@ -2,10 +2,10 @@
  * Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
  */
 
-package com.example.hercules.domain.repository
+package com.example.hercules.data.repository
 
 import com.example.hercules.data.model.DBSensor
-import com.example.hercules.domain.models.Sensor
+import com.example.hercules.domain.model.Sensor
 import kotlinx.coroutines.flow.Flow
 
 interface SensorsRepository {

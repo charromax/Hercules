@@ -1,8 +1,8 @@
-package com.example.hercules.domain.repository
+package com.example.hercules.data.repository
 
 import android.content.Context
-import com.example.hercules.domain.models.Message
-import com.example.hercules.utils.Result
+import com.example.hercules.domain.model.Message
+import com.example.hercules.presentation.utils.Result
 
 interface MqttRepository {
     suspend fun connect(context: Context, topics: List<String>): Result<String>

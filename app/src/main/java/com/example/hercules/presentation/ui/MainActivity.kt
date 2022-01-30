@@ -1,4 +1,4 @@
-package com.example.hercules.ui
+package com.example.hercules.presentation.ui
 
 import android.content.Context
 import android.content.Intent
@@ -16,10 +16,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.hercules.data.network.mqtt.MqttService
-import com.example.hercules.ui.theme.HerculesTheme
-import com.example.hercules.ui.theme.Shapes
+import com.example.hercules.presentation.theme.HerculesTheme
+import com.example.hercules.presentation.theme.Shapes
 import android.app.ActivityManager
 import android.util.Log
+import com.example.hercules.presentation.ui.home.HomeScreen
 
 const val TAG= "MAIN"
 class MainActivity : ComponentActivity() {
@@ -29,7 +30,7 @@ class MainActivity : ComponentActivity() {
             HerculesTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    HerculesHomeScreen(this)
+
                 }
             }
         }

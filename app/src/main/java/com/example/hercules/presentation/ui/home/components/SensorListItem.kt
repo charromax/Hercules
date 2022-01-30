@@ -2,7 +2,7 @@
  * Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
  */
 
-package com.example.hercules.ui.home.components
+package com.example.hercules.presentation.ui.home.components
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -18,7 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.hercules.R
-import com.example.hercules.domain.models.Sensor
+import com.example.hercules.domain.model.Sensor
 import org.joda.time.DateTime
 
 const val TAG = "sensor"
@@ -80,7 +80,7 @@ private fun getSensorButtonColor(sensor: Sensor): Color {
     return when {
         sensor.isActive && sensor.state -> MaterialTheme.colors.error
         sensor.isActive && !sensor.state -> Color.Green
-        else -> Color.LightGray
+        else -> MaterialTheme.colors.onSurface
     }
 }
 

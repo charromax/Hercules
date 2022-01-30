@@ -5,8 +5,8 @@
 package com.example.hercules.domain.use_case.sensors
 
 import com.example.hercules.data.model.DBSensor
-import com.example.hercules.domain.models.InvalidSensorException
-import com.example.hercules.domain.repository.SensorsRepository
+import com.example.hercules.domain.model.InvalidSensorException
+import com.example.hercules.data.repository.SensorsRepository
 import javax.inject.Inject
 
 class AddSensorUseCase @Inject constructor(

@@ -2,14 +2,14 @@
  * Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
  */
 
-package com.example.hercules.ui.home
+package com.example.hercules.presentation.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.hercules.domain.models.Sensor
+import com.example.hercules.domain.model.Sensor
 import com.example.hercules.domain.use_case.sensors.SensorUseCases
-import com.example.hercules.utils.Order
-import com.example.hercules.utils.SensorOrder
+import com.example.hercules.presentation.utils.Order
+import com.example.hercules.presentation.utils.SensorOrder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,6 +43,24 @@ class SensorsViewModel @Inject constructor(
             is HomeEvents.OnDeleteSensor -> deleteSensor(event.sensor)
             is HomeEvents.OnOrderChange -> checkIfOrderChangedThenChangeOrder(event)
             HomeEvents.OnUndoDelete -> restoreDeletedSensor()
+            HomeEvents.OnAddSensor -> navigateToAddSensorScreen()
+            HomeEvents.OnToggleSectionOrder -> toggleOrderSectionVisibility()
+        }
+    }
+
+    private fun navigateToAddSensorScreen() {
+        viewModelScope.launch {
+            _homeState.value = homeState.value.copy(
+                navigateToAddSensorScreen = true
+            )
+        }
+    }
+
+    private fun toggleOrderSectionVisibility() {
+        viewModelScope.launch {
+            _homeState.value = homeState.value.copy(
+                isOrderSectionVisible = !homeState.value.isOrderSectionVisible
+            )
         }
     }
 

@@ -6,10 +6,10 @@ package com.example.hercules.domain.use_case.mqtt
 
 import android.content.Context
 import com.example.hercules.R
-import com.example.hercules.domain.models.HerculesExceptions
-import com.example.hercules.domain.models.HerculesExceptions.EmptyTopicException
-import com.example.hercules.domain.repository.MqttRepository
-import com.example.hercules.utils.Result
+import com.example.hercules.domain.model.HerculesExceptions
+import com.example.hercules.domain.model.HerculesExceptions.EmptyTopicException
+import com.example.hercules.data.repository.MqttRepository
+import com.example.hercules.presentation.utils.Result
 import javax.inject.Inject
 
 class ConnectMqttUseCase @Inject constructor(

@@ -6,7 +6,8 @@ package com.example.hercules.domain.repository
 
 import com.example.hercules.data.local.SensorDao
 import com.example.hercules.data.model.DBSensor
-import com.example.hercules.domain.models.Sensor
+import com.example.hercules.data.repository.SensorsRepository
+import com.example.hercules.domain.model.Sensor
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

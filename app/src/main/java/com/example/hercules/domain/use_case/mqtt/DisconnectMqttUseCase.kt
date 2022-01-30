@@ -4,8 +4,8 @@
 
 package com.example.hercules.domain.use_case.mqtt
 
-import com.example.hercules.domain.repository.MqttRepository
-import com.example.hercules.utils.Result
+import com.example.hercules.data.repository.MqttRepository
+import com.example.hercules.presentation.utils.Result
 import javax.inject.Inject
 
 /**

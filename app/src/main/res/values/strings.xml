@@ -9,4 +9,12 @@
     <string name="empty_topics_list">Lista de topics vacía</string>
     <string name="sensor_activated">Sensor Activado</string>
     <string name="sensor_deactivated">Sensor Desactivado</string>
+    <string name="sensors_in_your_network">Sensores en tu red</string>
+    <string name="new_sensor">Nuevo Sensor</string>
+    <string name="sort_sensors">Ordenar sensores</string>
+    <string name="topic">Topic</string>
+    <string name="date">Fecha</string>
+    <string name="state">Estado</string>
+    <string name="sensor_deleted">Sensor eliminado</string>
+    <string name="undo">Deshacer</string>
 </resources>

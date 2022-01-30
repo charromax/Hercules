@@ -2,7 +2,7 @@
  * Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
  */
 
-package com.example.hercules.domain.models
+package com.example.hercules.domain.model
 
 import com.example.hercules.data.model.DBSensor
 

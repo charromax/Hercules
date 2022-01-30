@@ -1,4 +1,4 @@
-package com.example.hercules.ui.home
+package com.example.hercules.presentation.ui.home
 
 import android.content.Context
 

@@ -19,7 +19,7 @@
         android:theme="@style/Theme.Hercules">
 
         <activity
-            android:name=".ui.MainActivity"
+            android:name="com.example.hercules.presentation.ui.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Hercules.NoActionBar">

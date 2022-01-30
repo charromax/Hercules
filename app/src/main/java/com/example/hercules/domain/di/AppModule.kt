@@ -9,10 +9,10 @@ import androidx.room.Room
 import com.example.hercules.data.local.HerculesDB
 import com.example.hercules.data.local.SensorDao
 import com.example.hercules.data.network.mqtt.HerculesMqttClient
-import com.example.hercules.domain.repository.MqttRepository
+import com.example.hercules.data.repository.MqttRepository
 import com.example.hercules.domain.repository.MqttRepositoryImpl
 import com.example.hercules.domain.repository.SensorRepositoryImpl
-import com.example.hercules.domain.repository.SensorsRepository
+import com.example.hercules.data.repository.SensorsRepository
 import com.example.hercules.domain.use_case.mqtt.*
 import com.example.hercules.domain.use_case.sensors.AddSensorUseCase
 import com.example.hercules.domain.use_case.sensors.DeleteSensorUseCase

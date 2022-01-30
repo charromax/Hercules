@@ -2,15 +2,15 @@
  * Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
  */
 
-package com.example.hercules.ui.home
+package com.example.hercules.presentation.ui.home
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.hercules.domain.models.Message
+import com.example.hercules.domain.model.Message
 import com.example.hercules.domain.use_case.mqtt.MqttUseCases
-import com.example.hercules.utils.Failure
-import com.example.hercules.utils.Success
+import com.example.hercules.presentation.utils.Failure
+import com.example.hercules.presentation.utils.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

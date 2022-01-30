@@ -2,9 +2,9 @@
  * Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
  */
 
-package com.example.hercules.ui.home
+package com.example.hercules.presentation.ui.home
 
-import com.example.hercules.domain.models.Message
+import com.example.hercules.domain.model.Message
 
 data class MqttState(
     val isMqttConnected: Boolean = false,
