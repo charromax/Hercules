@@ -43,13 +43,13 @@ object HerculesMqttClient {
                     //connectionStatus = false
                     Log.i("Connection", "failure")
                     // Give your callback on connection failure here
-                    exception.printStackTrace()
+                    Log.e(TAG, exception.stackTraceToString())
                     listener?.onConnectionRefused(retries)
                 }
             }
         } catch (e: MqttException) {
             // Give your callback on connection failure here
-            e.printStackTrace()
+            Log.e(TAG, e.stackTraceToString())
             listener?.onConnectionRefused(retries)
         }
     }
@@ -60,6 +60,7 @@ object HerculesMqttClient {
     private fun createMqttConnectOptions() = MqttConnectOptions().apply {
         userName = USERNAME
         password = PASSWORD.toCharArray()
+
     }
 
     /**

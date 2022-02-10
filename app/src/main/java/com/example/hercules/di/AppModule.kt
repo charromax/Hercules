@@ -7,6 +7,7 @@ import com.example.hercules.data.local.HerculesDB
 import com.example.hercules.data.local.SensorDao
 import com.example.hercules.domain.repository.SensorRepositoryImpl
 import com.example.hercules.domain.repository.SensorsRepository
+import com.example.hercules.domain.use_case.AddSensorUseCase
 import com.example.hercules.domain.use_case.DeleteSensorUseCase
 import com.example.hercules.domain.use_case.GetAllSensorsUseCase
 import com.example.hercules.domain.use_case.SensorUseCases
@@ -20,8 +21,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
-
 
     @Provides
     @Singleton
@@ -49,7 +48,8 @@ object AppModule {
     fun provideSensorUseCases(repository: SensorsRepository): SensorUseCases {
         return SensorUseCases(
             getAllSensorsUseCase = GetAllSensorsUseCase(repository),
-            deleteSensorUseCase = DeleteSensorUseCase(repository)
+            deleteSensorUseCase = DeleteSensorUseCase(repository),
+            saveNewSensor = AddSensorUseCase(repository)
         )
     }
 }

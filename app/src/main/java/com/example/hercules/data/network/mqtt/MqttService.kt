@@ -13,6 +13,7 @@ import androidx.core.app.NotificationCompat.GROUP_ALERT_CHILDREN
 import androidx.core.app.NotificationManagerCompat
 import com.example.hercules.R
 import com.example.hercules.ui.MainActivity
+import org.eclipse.paho.client.mqttv3.MqttMessage
 
 class MqttService : Service(), MqttClientActions {
     val TAG = "MQTT_SERVICE"
@@ -20,12 +21,16 @@ class MqttService : Service(), MqttClientActions {
     val NOTIFICATION_ID = 213497586
     val GROUP_HERCULES_SENSORS = "com.android.example.hercules.SENSOR_GROUP"
     private lateinit var notification: Notification
-    val testTopics = listOf("home/office/door", "home/office/window")
+    val testTopics = arrayOf("home/office/door", "home/office/window", "home/terrace/pump")
 
 
     override fun onCreate() {
         super.onCreate()
-        HerculesMqttClient.listener = this
+//        HerculesMqttClient.listener = this
+        CustomMqttClient(applicationContext).connect(testTopics) {topic: String, message: MqttMessage ->
+            NotificationManagerCompat.from(applicationContext)
+                .notify(NOTIFICATION_ID, buildNotification("ALerta recibida", message.payload.toString()))
+        }
         notification = buildNotification("Hercules Vigila", "Sistema Online", true)
     }
 
@@ -61,7 +66,6 @@ class MqttService : Service(), MqttClientActions {
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        if (!HerculesMqttClient.connectionStatus) HerculesMqttClient.connect(applicationContext, testTopics)
         startForeground(NOTIFICATION_ID, notification)
         return START_NOT_STICKY
     }
@@ -80,22 +84,22 @@ class MqttService : Service(), MqttClientActions {
     }
 
     override fun onConnectionRefused(retries: Int) {
-        attemptRetryConnection(retries)
+//        attemptRetryConnection(retries)
     }
 
-    private fun attemptRetryConnection(retries: Int) {
-        if (retries < 5) {
-            HerculesMqttClient.incrementRetries()
-            HerculesMqttClient.connect(applicationContext, testTopics)
-        }
-    }
+//    private fun attemptRetryConnection(retries: Int) {
+//        if (retries < 5) {
+//            HerculesMqttClient.incrementRetries()
+//            HerculesMqttClient.connect(applicationContext, testTopics)
+//        }
+//    }
 
     override fun onDisconnect() {
         Log.i(TAG, "onDisconnect: DISCONNECTED")
     }
 
     override fun onConnectionLost(retries: Int) {
-        attemptRetryConnection(retries)
+//        attemptRetryConnection(retries)
     }
 
     override fun onError(error: String?) {
