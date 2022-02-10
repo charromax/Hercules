@@ -15,6 +15,7 @@ import com.example.hercules.domain.model.Message
 import com.example.hercules.presentation.utils.Failure
 import com.example.hercules.presentation.utils.Result
 import com.example.hercules.presentation.utils.Success
+import kotlinx.coroutines.suspendCancellableCoroutine
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -26,24 +27,32 @@ class MqttRepositoryImpl @Inject constructor(private val client: HerculesMqttCli
         context: Context,
         topics: List<String>
     ): Result<String> {
-        return suspendCoroutine { continuation ->
+        return suspendCancellableCoroutine { continuation ->
             client.connect(context, topics, object : MqttClientActions.Connection {
                 override fun onConnected() {
                     client.resetRetries()
-                    continuation.resume(Success(context.getString(R.string.connection_success)))
+                    if (!continuation.isActive) continuation.resume(Success(context.getString(R.string.connection_success)))
                 }
 
                 override fun onConnectionRefused(retries: Int) {
-                    continuation.resume(Failure(Exception(context.getString(R.string.rejected_connection))))
+                    if (!continuation.isActive) continuation.resume(
+                        Failure(
+                            Exception(
+                                context.getString(
+                                    R.string.rejected_connection
+                                )
+                            )
+                        )
+                    )
                 }
 
             }, object : MqttClientActions.Subscription {
                 override fun onError(error: String?) {
-                    continuation.resume(Failure(Exception(error)))
+                    if (!continuation.isActive) continuation.resume(Failure(Exception(error)))
                 }
 
                 override fun onSubcriptionSuccess(topic: String) {
-                    continuation.resume(Success(topic))
+                    if (!continuation.isActive) continuation.resume(Success(topic))
                 }
 
             })

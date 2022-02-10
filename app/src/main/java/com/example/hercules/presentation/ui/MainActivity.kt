@@ -1,10 +1,14 @@
 package com.example.hercules.presentation.ui
 
+import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,22 +19,30 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import com.example.hercules.data.network.mqtt.MqttService
 import com.example.hercules.presentation.theme.HerculesTheme
 import com.example.hercules.presentation.theme.Shapes
-import android.app.ActivityManager
-import android.util.Log
 import com.example.hercules.presentation.ui.home.HomeScreen
+import com.example.hercules.presentation.ui.home.MqttEvents
+import com.example.hercules.presentation.ui.home.MqttViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-const val TAG= "MAIN"
+const val TAG = "MAIN"
+
+@ExperimentalAnimationApi
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private val mqttViewModel: MqttViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mqttViewModel.onEvent(MqttEvents.StartConnectionRequest(this, listOf("home/terrace/pump")))
         setContent {
             HerculesTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-
+                    HomeScreen(mqttViewModel = mqttViewModel)
                 }
             }
         }
@@ -60,7 +72,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun HerculesHomeScreen(context: Context) {
     Column(
-        modifier= Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

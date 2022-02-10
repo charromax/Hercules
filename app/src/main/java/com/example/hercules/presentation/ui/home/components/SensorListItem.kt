@@ -70,7 +70,7 @@ fun SensorListItem(
 @Composable
 fun getAlarmText(sensor: Sensor): String {
     return when {
-        sensor.isActive && sensor.state -> "ALARMA"
+        sensor.isActive && sensor.isTriggered -> "ALARMA"
         else -> ""
     }
 }
@@ -78,8 +78,8 @@ fun getAlarmText(sensor: Sensor): String {
 @Composable
 private fun getSensorButtonColor(sensor: Sensor): Color {
     return when {
-        sensor.isActive && sensor.state -> MaterialTheme.colors.error
-        sensor.isActive && !sensor.state -> Color.Green
+        sensor.isActive && sensor.isTriggered -> MaterialTheme.colors.error
+        sensor.isActive && !sensor.isTriggered -> Color.Green
         else -> MaterialTheme.colors.onSurface
     }
 }
@@ -95,10 +95,11 @@ private fun checkIsActivated(sensor: Sensor) =
 fun SensorItemPreview() {
     val sensor = Sensor(
         topic = "home/office/door",
-        state = true,
+        isTriggered = true,
         isActive = true,
         id = 0,
-        createdAt = DateTime.now().millis
+        createdAt = DateTime.now().millis,
+        name = "sensor oficina"
     )
     
     SensorListItem(sensor = sensor, onButtonClicked = {

@@ -7,6 +7,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.GROUP_ALERT_CHILDREN
 import androidx.core.app.NotificationManagerCompat
@@ -15,25 +16,28 @@ import com.example.hercules.presentation.ui.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+const val TAG = "MQTT_SERVICE"
+private const val CHANNEL_ID = "HERCULES_CHANNEL"
+private const val NOTIFICATION_ID = 213497586
+private const val GROUP_HERCULES_SENSORS = "com.android.example.hercules.SENSOR_GROUP"
+
 @AndroidEntryPoint
-class MqttService : Service(), MqttClientActions {
+class MqttService : Service(), MqttClientActions{
     @Inject
     lateinit var client: HerculesMqttClient
 
-    val TAG = "MQTT_SERVICE"
-    val CHANNEL_ID = "HERCULES_CHANNEL"
-    val NOTIFICATION_ID = 213497586
-    val GROUP_HERCULES_SENSORS = "com.android.example.hercules.SENSOR_GROUP"
     private lateinit var notification: Notification
     val testTopics = listOf("home/office/door", "home/office/window")
 
 
+    @ExperimentalAnimationApi
     override fun onCreate() {
         super.onCreate()
         client.listener = this
         notification = buildNotification("Hercules Vigila", "Sistema Online", true)
     }
 
+    @ExperimentalAnimationApi
     @SuppressLint("UnspecifiedImmutableFlag")
     private fun buildNotification(
         title: String,
@@ -78,6 +82,7 @@ class MqttService : Service(), MqttClientActions {
         super.onDestroy()
     }
 
+    @ExperimentalAnimationApi
     fun onMessageReceived(message: String) {
         NotificationManagerCompat.from(applicationContext)
             .notify(NOTIFICATION_ID, buildNotification("ALerta recibida", message))

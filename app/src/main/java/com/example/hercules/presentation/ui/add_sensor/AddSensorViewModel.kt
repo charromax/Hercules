@@ -22,8 +22,6 @@ class AddSensorViewModel @Inject constructor(
      * database, using topic
      */
     fun onSaveNewSensor(topic: String) {
-        viewModelScope.launch {
-            sensorUseCases.saveNewSensor(DBSensor(topic = topic))
-        }
+
     }
 }

@@ -6,6 +6,7 @@ import com.example.hercules.presentation.utils.SensorOrder
 
 data class HomeState(
     val sensors: List<Sensor> = emptyList(),
+    val topicList: List<String> = emptyList(),
     val sensorOrder: SensorOrder = SensorOrder.Topic(Order.Ascending),
     val navigateToAddSensorScreen: Boolean = false,
     val isOrderSectionVisible: Boolean = false

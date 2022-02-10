@@ -6,6 +6,7 @@ package com.example.hercules.presentation.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.hercules.data.model.DBSensor
 import com.example.hercules.domain.model.Sensor
 import com.example.hercules.domain.use_case.sensors.SensorUseCases
 import com.example.hercules.presentation.utils.Order
@@ -43,7 +44,7 @@ class SensorsViewModel @Inject constructor(
             is HomeEvents.OnDeleteSensor -> deleteSensor(event.sensor)
             is HomeEvents.OnOrderChange -> checkIfOrderChangedThenChangeOrder(event)
             HomeEvents.OnUndoDelete -> restoreDeletedSensor()
-            HomeEvents.OnAddSensor -> navigateToAddSensorScreen()
+            is HomeEvents.OnAddSensor -> addSensor(event.sensor)
             HomeEvents.OnToggleSectionOrder -> toggleOrderSectionVisibility()
         }
     }
@@ -103,8 +104,15 @@ class SensorsViewModel @Inject constructor(
             .onEach { sensors ->
                 _homeState.value = homeState.value.copy(
                     sensors = sensors,
+                    topicList= sensors.map { it.topic },
                     sensorOrder = sensorOrder
                 )
             }.launchIn(viewModelScope)
+    }
+
+    private fun addSensor(sensor: DBSensor) {
+        viewModelScope.launch {
+            sensorUseCases.saveNewSensor(sensor)
+        }
     }
 }

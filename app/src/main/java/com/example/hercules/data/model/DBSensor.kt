@@ -4,6 +4,7 @@
 
 package com.example.hercules.data.model
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.hercules.domain.model.Sensor
@@ -12,8 +13,9 @@ import org.joda.time.Instant
 @Entity(tableName = "sensors")
 data class DBSensor(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val createdAt: Long = Instant.now().millis,
+    @ColumnInfo(name = "created_at") val createdAt: Long = Instant.now().millis,
     val topic: String,
+    val name: String
 ) {
     /**
      * maps to domain-defined Sensor model
@@ -23,8 +25,8 @@ data class DBSensor(
             id = id,
             createdAt = createdAt,
             topic = topic,
-            state = false,
-            isActive = false
+            isTriggered = false,
+            name = name
         )
     }
 

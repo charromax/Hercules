@@ -20,14 +20,14 @@ class GetAllSensorsUseCase @Inject constructor(
                         when(sensorOrder) {
                             is SensorOrder.Date -> sensors.sortedBy { it.createdAt }
                             is SensorOrder.Topic -> sensors.sortedBy { it.topic }
-                            is SensorOrder.State -> sensors.sortedBy { it.state }
+                            is SensorOrder.State -> sensors.sortedBy { it.isTriggered }
                         }
                     }
                     Order.Descending -> {
                         when(sensorOrder) {
                             is SensorOrder.Date -> sensors.sortedByDescending { it.createdAt }
                             is SensorOrder.Topic -> sensors.sortedByDescending { it.topic }
-                            is SensorOrder.State -> sensors.sortedByDescending { it.state }
+                            is SensorOrder.State -> sensors.sortedByDescending { it.isTriggered }
                         }
                     }
                 }

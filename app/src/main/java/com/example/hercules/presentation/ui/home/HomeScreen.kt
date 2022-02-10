@@ -12,15 +12,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.hercules.R
+import com.example.hercules.data.model.DBSensor
 import com.example.hercules.domain.model.Sensor
 import com.example.hercules.presentation.ui.home.components.SensorListItem
 import com.example.hercules.presentation.ui.home.components.SensorOrderSection
+import com.example.hercules.presentation.utils.Order
+import com.example.hercules.presentation.utils.SensorOrder
 import kotlinx.coroutines.launch
 
 private const val TAG = "SENSOR_LIST"
@@ -32,22 +36,24 @@ private const val TAG = "SENSOR_LIST"
 @ExperimentalAnimationApi
 @Composable
 fun HomeScreen(
-    navController: NavController,
     sensorViewModel: SensorsViewModel = viewModel(),
-    mqttViewModel: MqttViewModel = viewModel()
+    mqttViewModel: MqttViewModel
 ) {
     val state = sensorViewModel.homeState.value
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
     val deleteMsg = stringResource(R.string.sensor_deleted)
     val undoLabel = stringResource(R.string.undo)
-
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    //TODO: add navigation
-                    Log.i(TAG, "HomeScreen: ADD SENSOR")
+                    sensorViewModel.onEvent(HomeEvents.OnAddSensor(
+                        DBSensor(
+                            topic = "home/terrace/pump",
+                            name = "Regador"
+                        )
+                    ))
                 },
                 backgroundColor = MaterialTheme.colors.primary
             ) {
@@ -108,6 +114,7 @@ fun HomeScreen(
                         sensor = item,
                         onButtonClicked = {
                             Log.i(TAG, "HomeScreen: ALARM BUTTON CLICKED")
+                            mqttViewModel.onEvent(MqttEvents.PublishMessage(item.topic,"ON"))
                         },
                         onDeleteButtonClicked = {
                             sensorViewModel.onEvent(HomeEvents.OnDeleteSensor(it))

@@ -5,6 +5,7 @@
 package com.example.hercules.presentation.ui.home
 
 import android.content.Context
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hercules.domain.model.Message
@@ -28,8 +29,10 @@ class MqttViewModel @Inject constructor(
     fun onEvent(event: MqttEvents) {
         when (event) {
             is MqttEvents.StartConnectionRequest -> connect(event.context, event.topics)
+            is MqttEvents.PublishMessage -> publish(event.topic, event.message)
         }
     }
+
 
     /**
      * connect to mqtt broker

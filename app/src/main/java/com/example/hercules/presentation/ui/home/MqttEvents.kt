@@ -7,4 +7,10 @@ sealed class MqttEvents {
         val context: Context,
         val topics:List<String>
     ): MqttEvents()
+
+    data class PublishMessage(
+        val topic:String,
+        val message: String
+    ): MqttEvents()
+
 }

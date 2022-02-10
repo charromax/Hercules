@@ -38,11 +38,11 @@ class HerculesMqttClient {
                     }
                 }
 
-                override fun onFailure(asyncActionToken: IMqttToken, exception: Throwable) {
+                override fun onFailure(asyncActionToken: IMqttToken, exception: Throwable?) {
                     //connectionStatus = false
                     Log.i("Connection", "failure")
                     // Give your callback on connection failure here
-                    exception.printStackTrace()
+                    exception?.printStackTrace()
                     connectionListener?.onConnectionRefused(retries)
                 }
             }
@@ -75,10 +75,10 @@ class HerculesMqttClient {
 
                 override fun onFailure(
                     asyncActionToken: IMqttToken,
-                    exception: Throwable
+                    exception: Throwable?
                 ) {
                     // Give your subscription failure callback here
-                    listener?.onError(exception.message)
+                    listener?.onError(exception?.message)
                 }
             })
         } catch (e: MqttException) {
@@ -99,9 +99,9 @@ class HerculesMqttClient {
                     listener?.onUnsubscribed(topic)
                 }
 
-                override fun onFailure(asyncActionToken: IMqttToken, exception: Throwable) {
+                override fun onFailure(asyncActionToken: IMqttToken, exception: Throwable?) {
                     // Give your callback on failure here
-                    listener?.onError(exception.message)
+                    listener?.onError(exception?.message)
                 }
             }
         } catch (e: MqttException) {
@@ -178,10 +178,10 @@ class HerculesMqttClient {
 
                 override fun onFailure(
                     asyncActionToken: IMqttToken,
-                    exception: Throwable
+                    exception: Throwable?
                 ) {
                     // Give Callback on error here
-                    listener?.onError(exception.message)
+                    listener?.onError(exception?.message)
                 }
             }
         } catch (e: MqttException) {
