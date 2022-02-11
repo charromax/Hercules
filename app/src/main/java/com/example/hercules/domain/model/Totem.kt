@@ -11,14 +11,4 @@ abstract class Totem {
     abstract val createdAt: Long
     abstract val isActive: Boolean
 
-    fun turnOn() {
-
-    }
-    fun turnOff() {
-
-    }
-
-    fun register() {
-
-    }
 }

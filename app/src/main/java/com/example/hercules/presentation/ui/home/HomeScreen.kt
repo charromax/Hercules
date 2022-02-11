@@ -9,22 +9,20 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.example.hercules.R
 import com.example.hercules.data.model.DBSensor
+import com.example.hercules.domain.model.RegadorInstructionSet
 import com.example.hercules.domain.model.Sensor
 import com.example.hercules.presentation.ui.home.components.SensorListItem
 import com.example.hercules.presentation.ui.home.components.SensorOrderSection
-import com.example.hercules.presentation.utils.Order
-import com.example.hercules.presentation.utils.SensorOrder
 import kotlinx.coroutines.launch
 
 private const val TAG = "SENSOR_LIST"
@@ -39,7 +37,7 @@ fun HomeScreen(
     sensorViewModel: SensorsViewModel = viewModel(),
     mqttViewModel: MqttViewModel
 ) {
-    val state = sensorViewModel.homeState.value
+    val state = sensorViewModel.homeState.collectAsState()
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
     val deleteMsg = stringResource(R.string.sensor_deleted)
@@ -48,12 +46,14 @@ fun HomeScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    sensorViewModel.onEvent(HomeEvents.OnAddSensor(
-                        DBSensor(
-                            topic = "home/terrace/pump",
-                            name = "Regador"
+                    sensorViewModel.onEvent(
+                        HomeEvents.OnAddSensor(
+                            DBSensor(
+                                topic = "home/terrace/pump",
+                                name = "Regador"
+                            )
                         )
-                    ))
+                    )
                 },
                 backgroundColor = MaterialTheme.colors.primary
             ) {
@@ -93,7 +93,7 @@ fun HomeScreen(
             }
 
             AnimatedVisibility(
-                visible = state.isOrderSectionVisible,
+                visible = state.value.isOrderSectionVisible,
                 enter = fadeIn() + slideInVertically(),
                 exit = fadeOut() + slideOutVertically()
             ) {
@@ -101,25 +101,25 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 16.dp),
-                    sensorOrder = state.sensorOrder,
+                    sensorOrder = state.value.sensorOrder,
                     onOrderChange = {
                         sensorViewModel.onEvent(HomeEvents.OnOrderChange(it))
                     })
             }
             Spacer(modifier = Modifier.height(16.dp))
             LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(state.sensors) { item: Sensor ->
+                items(state.value.totems) { item: Sensor ->
                     SensorListItem(
                         modifier = Modifier.fillMaxWidth(),
                         sensor = item,
                         onButtonClicked = {
                             Log.i(TAG, "HomeScreen: ALARM BUTTON CLICKED")
-                            mqttViewModel.onEvent(MqttEvents.PublishMessage(item.topic,"ON"))
+                            sendWaterPumpPowerPayload(mqttViewModel, item)
                         },
                         onDeleteButtonClicked = {
                             sensorViewModel.onEvent(HomeEvents.OnDeleteSensor(it))
                             scope.launch {
-                                val result= scaffoldState.snackbarHostState.showSnackbar(
+                                val result = scaffoldState.snackbarHostState.showSnackbar(
                                     message = deleteMsg,
                                     actionLabel = undoLabel
                                 )
@@ -133,5 +133,38 @@ fun HomeScreen(
                 }
             }
         }
+    }
+}
+
+private fun sendWaterPumpPowerPayload(
+    mqttViewModel: MqttViewModel,
+    item: Sensor
+) {
+    if (mqttViewModel.mqttState.value.lastMessageSent?.topic != null
+        && mqttViewModel.mqttState.value.lastMessageSent?.topic == item.topic) {
+        if (mqttViewModel.mqttState.value.lastMessageSent?.message?.lowercase()
+            == RegadorInstructionSet.OFF.name.lowercase()
+        ) {
+            mqttViewModel.onEvent(
+                MqttEvents.PublishMessage(
+                    item.topic,
+                    RegadorInstructionSet.ON.name
+                )
+            )
+        } else {
+            mqttViewModel.onEvent(
+                MqttEvents.PublishMessage(
+                    item.topic,
+                    RegadorInstructionSet.OFF.name
+                )
+            )
+        }
+    } else {
+        mqttViewModel.onEvent(
+            MqttEvents.PublishMessage(
+                item.topic,
+                RegadorInstructionSet.ON.name
+            )
+        )
     }
 }

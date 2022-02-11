@@ -103,7 +103,7 @@ class SensorsViewModel @Inject constructor(
         getAllSensorsJob = sensorUseCases.getAllSensorsUseCase(sensorOrder)
             .onEach { sensors ->
                 _homeState.value = homeState.value.copy(
-                    sensors = sensors,
+                    totems = sensors,
                     topicList= sensors.map { it.topic },
                     sensorOrder = sensorOrder
                 )
