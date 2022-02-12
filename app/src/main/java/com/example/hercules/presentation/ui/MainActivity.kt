@@ -9,6 +9,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,17 +20,17 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import com.example.hercules.data.network.mqtt.MqttService
 import com.example.hercules.presentation.theme.HerculesTheme
 import com.example.hercules.presentation.theme.Shapes
 import com.example.hercules.presentation.ui.home.HomeScreen
-import com.example.hercules.presentation.ui.home.MqttEvents
-import com.example.hercules.presentation.ui.home.MqttViewModel
+import com.example.hercules.presentation.ui.mqtt.MqttEvents
+import com.example.hercules.presentation.ui.mqtt.MqttViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 const val TAG = "MAIN"
 
+@ExperimentalFoundationApi
 @ExperimentalAnimationApi
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -69,6 +70,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@ExperimentalFoundationApi
 @Composable
 fun HerculesHomeScreen(context: Context) {
     Column(
@@ -88,11 +90,13 @@ fun HerculesHomeScreen(context: Context) {
 
 }
 
+@ExperimentalFoundationApi
 private fun startMqttService(context: Context) {
     val serviceIntent = Intent(context, MqttService::class.java)
     context.startService(serviceIntent)
 }
 
+@ExperimentalFoundationApi
 private fun stopMqttService(context: Context) {
     val serviceIntent = Intent(context, MqttService::class.java)
     context.stopService(serviceIntent)

@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.GROUP_ALERT_CHILDREN
 import androidx.core.app.NotificationManagerCompat
@@ -21,6 +22,7 @@ private const val CHANNEL_ID = "HERCULES_CHANNEL"
 private const val NOTIFICATION_ID = 213497586
 private const val GROUP_HERCULES_SENSORS = "com.android.example.hercules.SENSOR_GROUP"
 
+@ExperimentalFoundationApi
 @AndroidEntryPoint
 class MqttService : Service(), MqttClientActions{
     @Inject

@@ -1,4 +1,4 @@
-package com.example.hercules.presentation.ui.home
+package com.example.hercules.presentation.ui.mqtt
 
 import android.content.Context
 

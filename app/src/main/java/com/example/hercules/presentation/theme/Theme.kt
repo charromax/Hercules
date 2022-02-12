@@ -10,20 +10,25 @@ private val DarkColorPalette = darkColors(
     primary = Yellow200,
     primaryVariant = Yellow700,
     secondary = Accent200,
+    secondaryVariant= Accent500,
     background = DarkGray,
     onBackground = LightText,
     surface = MediumGray,
-    onSurface = LightText
+    onSurface = LightText,
+    error = ErrorColor,
+    onPrimary = DarkText
 )
 
 private val LightColorPalette = lightColors(
     primary = Yellow500,
     primaryVariant = Yellow700,
-    secondary = Accent200,
+    secondary = Yellow200,
+    secondaryVariant= Yellow500,
     background = OffWhite,
     onBackground = DarkText,
-    surface = LightGray,
+    surface = LightestGray,
     onSurface = DarkText,
+    error = ErrorColor,
 
     /* Other default colors to override
     background = Color.White,

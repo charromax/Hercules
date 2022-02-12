@@ -1,13 +1,20 @@
 package com.example.hercules.presentation.ui.home.components
 
+import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.hercules.R
+import com.example.hercules.domain.model.Sensor
+import com.example.hercules.presentation.theme.HerculesShapes
 import com.example.hercules.presentation.utils.Order
 import com.example.hercules.presentation.utils.SensorOrder
+import org.joda.time.DateTime
 
 @Composable
 fun SensorOrderSection(
@@ -16,7 +23,10 @@ fun SensorOrderSection(
     onOrderChange: (SensorOrder) -> Unit
 ) {
     Column(
-        modifier = modifier
+        modifier = modifier.background(
+            color = MaterialTheme.colors.primary,
+            shape = HerculesShapes.medium
+        )
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             HerculesRadioButton(
@@ -24,7 +34,7 @@ fun SensorOrderSection(
                 selected = sensorOrder is SensorOrder.Topic,
                 onSelect = {
                     onOrderChange(
-                    SensorOrder.Topic(sensorOrder.order)
+                        SensorOrder.Topic(sensorOrder.order)
                     )
                 })
             Spacer(modifier = Modifier.width(8.dp))
@@ -67,5 +77,12 @@ fun SensorOrderSection(
                 })
         }
     }
+}
 
+@Preview
+@Composable
+fun HomeHeaderPreview() {
+    SensorOrderSection(
+        onOrderChange = {}
+    )
 }

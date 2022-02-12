@@ -2,7 +2,7 @@
  * Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
  */
 
-package com.example.hercules.presentation.ui.home
+package com.example.hercules.presentation.ui.mqtt
 
 import com.example.hercules.domain.model.Message
 

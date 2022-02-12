@@ -7,13 +7,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -21,8 +20,10 @@ import com.example.hercules.R
 import com.example.hercules.data.model.DBSensor
 import com.example.hercules.domain.model.RegadorInstructionSet
 import com.example.hercules.domain.model.Sensor
+import com.example.hercules.presentation.ui.home.components.HomeHeader
 import com.example.hercules.presentation.ui.home.components.SensorListItem
-import com.example.hercules.presentation.ui.home.components.SensorOrderSection
+import com.example.hercules.presentation.ui.mqtt.MqttEvents
+import com.example.hercules.presentation.ui.mqtt.MqttViewModel
 import kotlinx.coroutines.launch
 
 private const val TAG = "SENSOR_LIST"
@@ -58,8 +59,9 @@ fun HomeScreen(
                 backgroundColor = MaterialTheme.colors.primary
             ) {
                 Icon(
-                    imageVector = Icons.Default.AddCircle,
-                    contentDescription = stringResource(R.string.new_sensor)
+                    imageVector = Icons.Default.Add,
+                    contentDescription = stringResource(R.string.new_sensor),
+                    tint = MaterialTheme.colors.onBackground
                 )
             }
         },
@@ -69,44 +71,28 @@ fun HomeScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = stringResource(R.string.sensors_in_your_network),
-                    style = MaterialTheme.typography.h5
-                )
-                IconButton(
-                    onClick = { },
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.sort),
-                        contentDescription = stringResource(
-                            R.string.sort_sensors
-                        )
+            HomeHeader(
+                isVisible = state.value.isOrderSectionVisible,
+                order = state.value.sensorOrder,
+                onToggleOrderButton = {
+                    //order button clicked
+                    sensorViewModel.onEvent(HomeEvents.OnToggleSectionOrder)
+                },
+                onOrderChange = {
+                    sensorViewModel.onEvent(HomeEvents.OnOrderChange(it))
+                },
+                headerTitle = {
+                    Text(
+                        text = stringResource(R.string.sensors_in_your_network),
+                        style = MaterialTheme.typography.h6,
+                        color = MaterialTheme.colors.onSurface
                     )
                 }
-            }
+            )
 
-            AnimatedVisibility(
-                visible = state.value.isOrderSectionVisible,
-                enter = fadeIn() + slideInVertically(),
-                exit = fadeOut() + slideOutVertically()
-            ) {
-                SensorOrderSection(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 16.dp),
-                    sensorOrder = state.value.sensorOrder,
-                    onOrderChange = {
-                        sensorViewModel.onEvent(HomeEvents.OnOrderChange(it))
-                    })
-            }
             Spacer(modifier = Modifier.height(16.dp))
+
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(state.value.totems) { item: Sensor ->
                     SensorListItem(
@@ -141,7 +127,8 @@ private fun sendWaterPumpPowerPayload(
     item: Sensor
 ) {
     if (mqttViewModel.mqttState.value.lastMessageSent?.topic != null
-        && mqttViewModel.mqttState.value.lastMessageSent?.topic == item.topic) {
+        && mqttViewModel.mqttState.value.lastMessageSent?.topic == item.topic
+    ) {
         if (mqttViewModel.mqttState.value.lastMessageSent?.message?.lowercase()
             == RegadorInstructionSet.OFF.name.lowercase()
         ) {
