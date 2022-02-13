@@ -44,7 +44,7 @@ fun HomeHeader(
                     contentDescription = stringResource(
                         R.string.sort_sensors
                     ),
-                    tint = MaterialTheme.colors.onBackground
+                    tint = MaterialTheme.colors.onPrimary
                 )
             }
         }

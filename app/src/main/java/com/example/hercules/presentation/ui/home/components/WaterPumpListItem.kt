@@ -8,8 +8,6 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,13 +18,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.hercules.R
 import com.example.hercules.domain.model.Sensor
-import com.example.hercules.presentation.ui.home.HomeEvents
 import org.joda.time.DateTime
 
 const val TAG = "sensor"
 
 @Composable
-fun SensorListItem(
+fun WaterPumpListItem(
     sensor: Sensor,
     modifier: Modifier = Modifier,
     onButtonClicked: (sensor: Sensor) -> Unit,
@@ -37,35 +34,45 @@ fun SensorListItem(
         modifier = modifier
             .padding(8.dp)
             .background(color = MaterialTheme.colors.surface, shape = MaterialTheme.shapes.small),
-        verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.Start
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = modifier.fillMaxWidth()
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(8.dp)
         ) {
             Text(
                 text = sensor.topic,
                 style = MaterialTheme.typography.h6,
                 color = if (sensor.isActive) colorActive else MaterialTheme.colors.onSurface,
-                modifier = modifier.padding(8.dp)
+                modifier = Modifier
+                    .fillMaxWidth(0.6f)
             )
-            IconButton(
-                modifier = modifier.padding(4.dp),
-                onClick = { onDeleteButtonClicked(sensor) },
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = MaterialTheme.colors.error,
+                        shape = MaterialTheme.shapes.small
+                    )
             ) {
-                Icon(
-                    painterResource(id = R.drawable.ic_delete),
-                    contentDescription = null
-                )
+                IconButton(
+                    onClick = { onDeleteButtonClicked(sensor) },
+                ) {
+                    Icon(
+                        painterResource(id = R.drawable.ic_delete),
+                        contentDescription = null,
+                        tint = MaterialTheme.colors.onError
+                    )
+                }
             }
         }
         Text(
             text = checkIsActivated(sensor),
             style = MaterialTheme.typography.subtitle1,
             color = MaterialTheme.colors.onSurface,
-                    modifier = modifier.padding(horizontal = 8.dp)
+            modifier = modifier.padding(horizontal = 8.dp)
         )
         Button(
             onClick = {
@@ -98,7 +105,7 @@ private fun getSensorButtonColor(sensor: Sensor): Color {
     return when {
         sensor.isActive && sensor.isTriggered -> MaterialTheme.colors.error
         sensor.isActive && !sensor.isTriggered -> Color.Green
-        else -> MaterialTheme.colors.onSurface
+        else -> MaterialTheme.colors.primary
     }
 }
 
@@ -119,8 +126,8 @@ fun SensorItemPreview() {
         createdAt = DateTime.now().millis,
         name = "sensor oficina"
     )
-    
-    SensorListItem(sensor = sensor, onButtonClicked = {
+
+    WaterPumpListItem(sensor = sensor, onButtonClicked = {
         Log.i(TAG, "SensorItemPreview $sensor")
     },
         onDeleteButtonClicked = {

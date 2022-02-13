@@ -8,7 +8,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
@@ -21,7 +20,7 @@ import com.example.hercules.data.model.DBSensor
 import com.example.hercules.domain.model.RegadorInstructionSet
 import com.example.hercules.domain.model.Sensor
 import com.example.hercules.presentation.ui.home.components.HomeHeader
-import com.example.hercules.presentation.ui.home.components.SensorListItem
+import com.example.hercules.presentation.ui.home.components.WaterPumpListItem
 import com.example.hercules.presentation.ui.mqtt.MqttEvents
 import com.example.hercules.presentation.ui.mqtt.MqttViewModel
 import kotlinx.coroutines.launch
@@ -55,13 +54,20 @@ fun HomeScreen(
                             )
                         )
                     )
+                    sensorViewModel.onEvent(
+                        HomeEvents.OnAddSensor(
+                            DBSensor(
+                                topic = "home/office/door",
+                                name = "Sensor Puerta"
+                            )
+                        )
+                    )
                 },
                 backgroundColor = MaterialTheme.colors.primary
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(R.string.new_sensor),
-                    tint = MaterialTheme.colors.onBackground
+                    contentDescription = stringResource(R.string.new_sensor)
                 )
             }
         },
@@ -86,7 +92,7 @@ fun HomeScreen(
                     Text(
                         text = stringResource(R.string.sensors_in_your_network),
                         style = MaterialTheme.typography.h6,
-                        color = MaterialTheme.colors.onSurface
+                        color = MaterialTheme.colors.onPrimary
                     )
                 }
             )
@@ -95,7 +101,7 @@ fun HomeScreen(
 
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(state.value.totems) { item: Sensor ->
-                    SensorListItem(
+                    WaterPumpListItem(
                         modifier = Modifier.fillMaxWidth(),
                         sensor = item,
                         onButtonClicked = {
