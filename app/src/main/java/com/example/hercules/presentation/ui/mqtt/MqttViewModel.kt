@@ -43,6 +43,7 @@ class MqttViewModel @Inject constructor(
                 is Success -> {
                     _mqttState.value =
                         mqttState.value.copy(isMqttConnected = true, snack = result.value)
+                    getMessages()
                 }
             }
         }

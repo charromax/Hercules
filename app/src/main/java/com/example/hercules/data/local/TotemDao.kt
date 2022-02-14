@@ -5,22 +5,22 @@
 package com.example.hercules.data.local
 
 import androidx.room.*
-import com.example.hercules.data.model.DBSensor
+import com.example.hercules.data.model.DBTotem
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface SensorDao {
+interface TotemDao {
 
     @Query("SELECT * FROM sensors")
-    fun getAllSensors(): Flow<List<DBSensor>>
+    fun getAllTotems(): Flow<List<DBTotem>>
 
     @Query("SELECT * FROM sensors WHERE id = :id")
-    suspend fun getSensorByID(id: Int): DBSensor?
+    suspend fun getTotemByID(id: Int): DBTotem?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addNewSensor(sensor: DBSensor)
+    suspend fun addNewTotem(totem: DBTotem)
 
     @Delete
-    suspend fun deleteSensor(sensor: DBSensor)
+    suspend fun deleteTotem(totem: DBTotem)
 
 }

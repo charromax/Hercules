@@ -15,6 +15,8 @@
     <string name="topic">Topic</string>
     <string name="date">Fecha</string>
     <string name="state">Estado</string>
-    <string name="sensor_deleted">Totem eliminado</string>
+    <string name="sensor_deleted">Sensor eliminado</string>
+    <string name="water_pump_deleted">Regador eliminado</string>
     <string name="undo">Deshacer</string>
+    <string name="pump_water">REGAR</string>
 </resources>

@@ -18,7 +18,7 @@ import javax.inject.Singleton
 object ScopeModule {
     @Singleton // Provide always the same instance
     @Provides
-    fun providesCoroutineScope(): CoroutineScope {
+    fun provideCoroutineScope(): CoroutineScope {
         // Run this code when providing an instance of CoroutineScope
         return CoroutineScope(SupervisorJob() + Dispatchers.IO)
     }

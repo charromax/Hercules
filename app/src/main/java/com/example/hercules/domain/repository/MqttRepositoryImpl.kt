@@ -24,8 +24,7 @@ class MqttRepositoryImpl @Inject constructor(private val client: HerculesMqttCli
     MqttRepository {
 
     override suspend fun connect(
-        context: Context,
-        topics: List<String>
+        context: Context
     ): Result<String> {
         return suspendCancellableCoroutine { continuation ->
             client.connect(context, topics, object : MqttClientActions.Connection {

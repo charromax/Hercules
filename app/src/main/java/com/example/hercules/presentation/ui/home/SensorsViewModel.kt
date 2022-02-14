@@ -6,8 +6,8 @@ package com.example.hercules.presentation.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.hercules.data.model.DBSensor
-import com.example.hercules.domain.model.Sensor
+import com.example.hercules.data.model.DBTotem
+import com.example.hercules.domain.model.Totem
 import com.example.hercules.domain.use_case.sensors.SensorUseCases
 import com.example.hercules.presentation.utils.Order
 import com.example.hercules.presentation.utils.SensorOrder
@@ -28,7 +28,7 @@ class SensorsViewModel @Inject constructor(
     private val _homeState = MutableStateFlow(HomeState())
     val homeState: StateFlow<HomeState> = _homeState
 
-    private var recentlyDeletedSensor: Sensor? = null
+    private var recentlyDeletedSensor: Totem? = null
 
     private var getAllSensorsJob: Job? = null
 
@@ -41,10 +41,10 @@ class SensorsViewModel @Inject constructor(
      */
     fun onEvent(event: HomeEvents) {
         when (event) {
-            is HomeEvents.OnDeleteSensor -> deleteSensor(event.sensor)
+            is HomeEvents.OnDeleteTotem -> deleteTotem(event.totem)
             is HomeEvents.OnOrderChange -> checkIfOrderChangedThenChangeOrder(event)
             HomeEvents.OnUndoDelete -> restoreDeletedSensor()
-            is HomeEvents.OnAddSensor -> addSensor(event.sensor)
+            is HomeEvents.OnAddSensor -> addSensor(event.totem)
             HomeEvents.OnToggleSectionOrder -> toggleOrderSectionVisibility()
         }
     }
@@ -80,7 +80,7 @@ class SensorsViewModel @Inject constructor(
      */
     private fun restoreDeletedSensor() {
         viewModelScope.launch {
-            sensorUseCases.saveNewSensor(recentlyDeletedSensor?.toDBSensor() ?: return@launch)
+            sensorUseCases.saveNewSensor(recentlyDeletedSensor?.toDBObject() ?: return@launch)
             recentlyDeletedSensor = null
         }
     }
@@ -88,10 +88,10 @@ class SensorsViewModel @Inject constructor(
     /**
      * delete sensor from local DB
      */
-    private fun deleteSensor(sensor: Sensor) {
+    private fun deleteTotem(totem: Totem) {
         viewModelScope.launch {
-            recentlyDeletedSensor = sensor
-            sensorUseCases.deleteSensorUseCase(sensor)
+            recentlyDeletedSensor = totem
+            sensorUseCases.deleteSensorUseCase(totem)
         }
     }
 
@@ -101,18 +101,18 @@ class SensorsViewModel @Inject constructor(
     private fun getAllSensorsFromDB(sensorOrder: SensorOrder) {
         getAllSensorsJob?.cancel()
         getAllSensorsJob = sensorUseCases.getAllSensorsUseCase(sensorOrder)
-            .onEach { sensors ->
+            .onEach { totems ->
                 _homeState.value = homeState.value.copy(
-                    totems = sensors,
-                    topicList= sensors.map { it.topic },
+                    totems =  totems,
+                    topicList= totems.map { it.topic },
                     sensorOrder = sensorOrder
                 )
             }.launchIn(viewModelScope)
     }
 
-    private fun addSensor(sensor: DBSensor) {
+    private fun addSensor(totem: DBTotem) {
         viewModelScope.launch {
-            sensorUseCases.saveNewSensor(sensor)
+            sensorUseCases.saveNewSensor(totem)
         }
     }
 }

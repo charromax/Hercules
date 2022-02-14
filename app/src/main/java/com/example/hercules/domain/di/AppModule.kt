@@ -7,7 +7,7 @@ package com.example.hercules.domain.di
 import android.app.Application
 import androidx.room.Room
 import com.example.hercules.data.local.HerculesDB
-import com.example.hercules.data.local.SensorDao
+import com.example.hercules.data.local.TotemDao
 import com.example.hercules.data.network.mqtt.HerculesMqttClient
 import com.example.hercules.data.repository.MqttRepository
 import com.example.hercules.domain.repository.MqttRepositoryImpl
@@ -40,13 +40,13 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideSensorDao(database: HerculesDB): SensorDao {
+    fun provideSensorDao(database: HerculesDB): TotemDao {
         return database.sensorDao()
     }
 
     @Provides
     @Singleton
-    fun provideSensorRepository(dao: SensorDao): SensorsRepository {
+    fun provideSensorRepository(dao: TotemDao): SensorsRepository {
         return SensorRepositoryImpl(dao)
     }
 

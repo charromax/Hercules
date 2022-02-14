@@ -4,7 +4,7 @@
 
 package com.example.hercules.domain.model
 
-import com.example.hercules.data.model.DBSensor
+import com.example.hercules.data.model.DBTotem
 
 
 class Sensor(
@@ -14,20 +14,30 @@ class Sensor(
     override val powerState: PowerState = PowerState.OFF,
     override val name: String,
     override val createdAt: Long,
-    override val isActive: Boolean = false
+    override val isActive: Boolean = false,
+    override val type: TotemType
 ) : Totem() {
 
-    fun toDBSensor(): DBSensor {
-        return DBSensor(
+    override fun toDBObject(): DBTotem {
+        return DBTotem(
             id = id,
             createdAt = createdAt,
             topic = topic,
-            name = name
+            name = name,
+            totemType = type
         )
     }
 
-    override fun toString(): String {
-        return "$id - $topic"
+    companion object {
+        fun build(totem: DBTotem) =
+            Sensor(
+                id = totem.id,
+                createdAt = totem.createdAt,
+                topic = totem.topic,
+                isTriggered = false,
+                name = totem.name,
+                type = totem.totemType
+            )
     }
 }
 
