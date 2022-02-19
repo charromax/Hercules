@@ -101,7 +101,7 @@ class MqttRepositoryImpl @Inject constructor(
     }.flowOn(scope.coroutineContext)
 
     override fun unSubscribeFromTopic(topic: String): Flow<Resource<Nothing>> = flow {
-        mqttDataSource.unSubscribeFromTopic(topic).collect { response->
+        mqttDataSource.unSubscribeFromTopic(topic).collect { response ->
             when (response) {
                 is MqttResponse.Success -> emit(Resource.Success(response.message))
                 is MqttResponse.Failure -> emit(
@@ -139,6 +139,29 @@ class MqttRepositoryImpl @Inject constructor(
                     Resource.MessageReceived(
                         response.data,
                         response.topic
+                    )
+                )
+                else -> throw IllegalStateException("Undefined State")
+            }
+        }
+
+    }.flowOn(scope.coroutineContext)
+
+    override fun publishMessage(topic: String, message: String): Flow<Resource<Nothing>> = flow {
+        mqttDataSource.publishMessageInTopic(topic, message).collect { response ->
+            when (response) {
+                is MqttResponse.Success -> emit(Resource.Success(response.message))
+                is MqttResponse.Failure -> emit(
+                    Resource.Failure(
+                        response.exception,
+                        response.message
+                    )
+                )
+                is MqttResponse.Error -> emit(Resource.Error(response.exception, response.message))
+                is MqttResponse.UnknownError -> emit(
+                    Resource.UnknownError(
+                        response.exception,
+                        response.message
                     )
                 )
                 else -> throw IllegalStateException("Undefined State")

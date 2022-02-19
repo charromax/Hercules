@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
+ */
+
 package com.example.hercules.data.repository
 
 import com.example.hercules.presentation.utils.Resource
@@ -15,4 +19,6 @@ interface MqttRepository {
     fun unSubscribeFromTopic(topic: String): Flow<Resource<Nothing>>
 
     fun retrieveMessageFromPublisher(): Flow<Resource<String>>
+
+    fun publishMessage(topic: String, message: String): Flow<Resource<Nothing>>
 }

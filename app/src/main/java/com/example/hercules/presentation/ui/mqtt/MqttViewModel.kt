@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val UNDEFINED = "Undefined State"
 @HiltViewModel
 class MqttViewModel @Inject constructor(
     private val mqttUseCase: MqttUseCase
@@ -51,7 +52,9 @@ class MqttViewModel @Inject constructor(
                     is Resource.Failure -> _mqttState.value = mqttState.value.copy(
                         error = "[Error] Publish message in topic $topic"
                     )
-                    else -> throw java.lang.IllegalStateException("Undefined State")
+                    else -> {
+                        throw java.lang.IllegalStateException(UNDEFINED)
+                    }
                 }
             }
         }
@@ -63,7 +66,7 @@ class MqttViewModel @Inject constructor(
      */
     private fun connect() {
         connectionMqttJob?.cancel()
-        connectionMqttJob = viewModelScope.launch {
+        viewModelScope.launch {
             mqttUseCase.connectToMQTT().collect { response ->
                 when (response) {
                     is Resource.Success -> {
@@ -81,7 +84,7 @@ class MqttViewModel @Inject constructor(
                     is Resource.UnknownError -> updateErrorState(
                         "[UnknownError] Connect to MQTT caused by ${response.exception.message}"
                     )
-                    else -> throw IllegalStateException("Undefined State")
+                    else -> throw IllegalStateException(UNDEFINED)
                 }
             }
         }
@@ -93,9 +96,9 @@ class MqttViewModel @Inject constructor(
                 when (response) {
                     is Resource.MessageReceived -> onMessageReceived(response)
                     is Resource.ConnectionLost -> response.exception?.let { updateErrorState(it) }
-                    is Resource.Error -> response.exception?.let { updateErrorState(it) }
-                    is Resource.UnknownError -> response.exception?.let { updateErrorState(it) }
-                    else -> throw IllegalStateException("Undefined state")
+                    is Resource.Error -> updateErrorState(response.exception)
+                    is Resource.UnknownError -> updateErrorState(response.exception)
+                    else -> throw IllegalStateException(UNDEFINED)
                 }
 
             }
@@ -110,7 +113,7 @@ class MqttViewModel @Inject constructor(
                     is Resource.Failure -> addFailedTopic(topic)
                     is Resource.Error -> addFailedTopic(topic)
                     is Resource.UnknownError -> addFailedTopic(topic)
-                    else -> throw IllegalStateException("Undefined State")
+                    else -> throw IllegalStateException(UNDEFINED)
                 }
             }
         }
@@ -160,7 +163,7 @@ class MqttViewModel @Inject constructor(
                         error =
                         "[UnknownError] unsubscribe from topic $topic"
                     )
-                    else -> throw IllegalStateException("Undefined State")
+                    else -> throw IllegalStateException(UNDEFINED)
                 }
             }
         }
@@ -178,13 +181,13 @@ class MqttViewModel @Inject constructor(
                         error =
                         "[UnknownError] disconnect from MQTT"
                     )
-                    else -> throw IllegalStateException("Undefined State")
+                    else -> throw IllegalStateException(UNDEFINED)
                 }
             }
         }
     }
 
-    private fun updateErrorState(e: Exception) {
+    private fun updateErrorState(e: Throwable) {
         _mqttState.value = mqttState.value.copy(
             error = e.message
         )

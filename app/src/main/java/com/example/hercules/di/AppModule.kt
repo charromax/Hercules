@@ -15,12 +15,10 @@ import com.example.hercules.data.repository.MqttRepository
 import com.example.hercules.data.repository.SensorsRepository
 import com.example.hercules.domain.repository.MqttRepositoryImpl
 import com.example.hercules.domain.repository.SensorRepositoryImpl
-import com.example.hercules.domain.use_case.mqtt.*
 import com.example.hercules.domain.use_case.sensors.AddSensorUseCase
 import com.example.hercules.domain.use_case.sensors.DeleteSensorUseCase
 import com.example.hercules.domain.use_case.sensors.GetAllSensorsUseCase
 import com.example.hercules.domain.use_case.sensors.SensorUseCases
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -92,8 +90,15 @@ object AppModule {
         MQTTClient(mqttAndroidClient)
 
     @Provides
+    fun provideMQTTDataSource(mqttClient: MQTTClient): MqttDataSource =
+        MqttDataSource(mqttClient)
+
+    @Provides
     @Singleton
-    fun provideMqttRepository(mqttDataSource: MqttDataSource, scope:CoroutineScope): MqttRepository {
+    fun provideMqttRepository(
+        mqttDataSource: MqttDataSource,
+        scope: CoroutineScope
+    ): MqttRepository {
         return MqttRepositoryImpl(mqttDataSource, scope)
     }
 }

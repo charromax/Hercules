@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
+ */
+
 package com.example.hercules.data.remote
 
 import com.example.hercules.data.remote.mqtt.MQTTClient
@@ -31,6 +35,12 @@ class MqttDataSource @Inject constructor(private val client: MQTTClient) {
 
     fun unSubscribeFromTopic(topic: String): Flow<MqttResponse<Nothing>> = client
         .unSubscribeTopic(topic)
+        .catch { exception ->
+            handleException<Nothing>(exception = exception).also { emit(it) }
+        }
+
+    fun publishMessageInTopic(topic: String, message: String): Flow<MqttResponse<Nothing>> = client
+        .publish(topic, message)
         .catch { exception ->
             handleException<Nothing>(exception = exception).also { emit(it) }
         }
