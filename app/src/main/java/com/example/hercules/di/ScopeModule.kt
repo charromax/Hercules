@@ -2,7 +2,7 @@
  * Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
  */
 
-package com.example.hercules.domain.di
+package com.example.hercules.di
 
 import dagger.Module
 import dagger.Provides

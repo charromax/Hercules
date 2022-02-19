@@ -31,7 +31,7 @@
         </activity>
 
         <service android:name="org.eclipse.paho.android.service.MqttService" />
-        <service android:name=".data.network.mqtt.MqttService" />
+        <service android:name=".data.remote.mqtt.MqttService" />
     </application>
 
 </manifest>

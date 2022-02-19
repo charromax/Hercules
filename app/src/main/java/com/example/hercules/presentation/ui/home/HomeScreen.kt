@@ -42,6 +42,14 @@ fun HomeScreen(
     val mqttState = mqttViewModel.mqttState.collectAsState()
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
+    if (mqttState.value.isMqttConnected && totemState.value.topicList.isNotEmpty()) {
+        mqttViewModel.topicList.clear()
+        mqttViewModel.topicList.addAll(totemState.value.topicList)
+        totemState.value.topicList.forEach {
+            mqttViewModel.onEvent(MqttEvents.SubscribeToTopic(it))
+        }
+    }
+
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
