@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
+ */
+
 package com.example.hercules.data.remote.mqtt
 
 import android.util.Log
@@ -26,7 +30,7 @@ class MQTTClient @Inject constructor(private val client: MqttAndroidClient) {
         client.connect(createMqttConnectOptions()).apply {
             actionCallback = object : IMqttActionListener {
                 override fun onSuccess(asyncActionToken: IMqttToken?) {
-                    Log.d(TAG,"[SUCCESS] connected to ${client.serverURI}")
+                    Log.d(TAG, "[SUCCESS] connected to ${client.serverURI}")
                     trySend(MqttResponse.Success("Successfully connected to ${client.serverURI}")).isSuccess
                 }
 
@@ -50,18 +54,26 @@ class MQTTClient @Inject constructor(private val client: MqttAndroidClient) {
     fun retrieveMessageFromPublisher(): Flow<MqttResponse<String>> = callbackFlow {
         client.setCallback(object : MqttCallback {
             override fun connectionLost(cause: Throwable?) {
-                Log.d(TAG,"[LOST CONNECTION] caused by $cause")
-                offer(MqttResponse.ConnectionLost(cause))
+                Log.d(TAG, "[LOST CONNECTION] caused by $cause")
+                trySend(MqttResponse.ConnectionLost(cause)).isSuccess
             }
 
             override fun messageArrived(topic: String?, message: MqttMessage?) {
                 val currentTimestamp = Timestamp(System.currentTimeMillis())
-                Log.d(TAG,"[MESSAGE RECEIVED] from topic : $topic with message : $message at $currentTimestamp")
-                offer(MqttResponse.MessageReceived(message.toString(), topic.toString()))
+                Log.d(
+                    TAG,
+                    "[MESSAGE RECEIVED] from topic : $topic with message : $message at $currentTimestamp"
+                )
+                trySend(
+                    MqttResponse.MessageReceived(
+                        message.toString(),
+                        topic.toString()
+                    )
+                ).isSuccess
             }
 
             override fun deliveryComplete(token: IMqttDeliveryToken?) {
-                Log.d(TAG,"[DELIVERY COMPLETE] from ${client.serverURI}")
+                Log.d(TAG, "[DELIVERY COMPLETE] from ${client.serverURI}")
             }
         })
 
@@ -79,13 +91,13 @@ class MQTTClient @Inject constructor(private val client: MqttAndroidClient) {
             null,
             object : IMqttActionListener {
                 override fun onSuccess(asyncActionToken: IMqttToken?) {
-                    Log.d(TAG,"[SUCCESS] subscribe on topic : $topic")
-                    offer(MqttResponse.Success("Successfully subscribe to topic $topic"))
+                    Log.d(TAG, "[SUCCESS] subscribe on topic : $topic")
+                    trySend(MqttResponse.Success("Successfully subscribe to topic $topic")).isSuccess
                 }
 
                 override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
-                    Log.d(TAG,"[FAILURE] subscribe on topic : $topic caused by $exception")
-                    offer(MqttResponse.Failure(exception, topic))
+                    Log.d(TAG, "[FAILURE] subscribe on topic : $topic caused by $exception")
+                    trySend(MqttResponse.Failure(exception, topic)).isSuccess
                 }
             }
         )
@@ -96,13 +108,13 @@ class MQTTClient @Inject constructor(private val client: MqttAndroidClient) {
     fun unSubscribeTopic(topic: String): Flow<MqttResponse<Nothing>> = callbackFlow {
         client.unsubscribe(topic, null, object : IMqttActionListener {
             override fun onSuccess(asyncActionToken: IMqttToken?) {
-                Log.d(TAG,"[SUCCESS] unsubscribe on topic : $topic")
-                offer(MqttResponse.Success(topic))
+                Log.d(TAG, "[SUCCESS] unsubscribe on topic : $topic")
+                trySend(MqttResponse.Success(topic)).isSuccess
             }
 
             override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
-                Log.d(TAG,"[FAILURE] unsubscribe on topic : $topic caused by $exception")
-                offer(MqttResponse.Failure(exception, topic))
+                Log.d(TAG, "[FAILURE] unsubscribe on topic : $topic caused by $exception")
+                trySend(MqttResponse.Failure(exception, topic)).isSuccess
             }
         })
 
@@ -112,15 +124,47 @@ class MQTTClient @Inject constructor(private val client: MqttAndroidClient) {
     fun disconnectMQTT(): Flow<MqttResponse<Nothing>> = callbackFlow {
         client.disconnect(null, object : IMqttActionListener {
             override fun onSuccess(asyncActionToken: IMqttToken?) {
-                Log.d(TAG,"[SUCCESS] disconnected from ${client.serverURI}")
-                offer(MqttResponse.Success("Successfully disconnected from ${client.serverURI}"))
+                Log.d(TAG, "[SUCCESS] disconnected from ${client.serverURI}")
+                trySend(MqttResponse.Success("Successfully disconnected from ${client.serverURI}")).isSuccess
             }
 
             override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
-                Log.d(TAG,"[FAILURE] disconnected to ${client.serverURI} caused by $exception")
-                offer(MqttResponse.Failure(exception, client.serverURI))
+                Log.d(TAG, "[FAILURE] disconnected to ${client.serverURI} caused by $exception")
+                trySend(
+                    MqttResponse.Failure(
+                        exception,
+                        client.serverURI
+                    )
+                ).isSuccess
             }
         })
+
+        awaitClose { close() }
+    }
+
+    fun publish(topic: String, message: String): Flow<MqttResponse<Nothing>> = callbackFlow {
+        client.publish(
+            topic,
+            message.toByteArray(),
+            1,
+            false,
+            null,
+            object : IMqttActionListener {
+                override fun onSuccess(asyncActionToken: IMqttToken?) {
+                    trySend(MqttResponse.Success(topic)).isSuccess
+                }
+
+                override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
+                    trySend(
+                        MqttResponse.Failure(
+                            exception,
+                            client.serverURI
+                        )
+                    ).isSuccess
+                }
+
+            }
+        )
 
         awaitClose { close() }
     }

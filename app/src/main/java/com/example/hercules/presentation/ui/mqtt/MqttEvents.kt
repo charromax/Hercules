@@ -1,17 +1,19 @@
+/*
+ * Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
+ */
+
 package com.example.hercules.presentation.ui.mqtt
 
-import android.content.Context
-
 sealed class MqttEvents {
-    object StartConnectionRequest: MqttEvents()
+    object StartConnectionRequest : MqttEvents()
 
     data class SubscribeToTopic(
         val topic: String
-    ): MqttEvents()
+    ) : MqttEvents()
 
     data class PublishMessage(
-        val topic:String,
+        val topic: String,
         val message: String
-    ): MqttEvents()
+    ) : MqttEvents()
 
 }

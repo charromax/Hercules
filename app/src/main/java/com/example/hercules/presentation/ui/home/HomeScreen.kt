@@ -1,5 +1,10 @@
+/*
+ * Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
+ */
+
 package com.example.hercules.presentation.ui.home
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
@@ -9,9 +14,11 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -22,6 +29,7 @@ import com.example.hercules.presentation.ui.home.components.HomeHeader
 import com.example.hercules.presentation.ui.home.components.WaterPumpListItem
 import com.example.hercules.presentation.ui.home.components.totems.MagneticSensor
 import com.example.hercules.presentation.ui.mqtt.MqttEvents
+import com.example.hercules.presentation.ui.mqtt.MqttState
 import com.example.hercules.presentation.ui.mqtt.MqttViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -42,14 +50,14 @@ fun HomeScreen(
     val mqttState = mqttViewModel.mqttState.collectAsState()
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
-    if (mqttState.value.isMqttConnected && totemState.value.topicList.isNotEmpty()) {
-        mqttViewModel.topicList.clear()
-        mqttViewModel.topicList.addAll(totemState.value.topicList)
-        totemState.value.topicList.forEach {
-            mqttViewModel.onEvent(MqttEvents.SubscribeToTopic(it))
-        }
-    }
-
+    addTopicList(mqttState, totemState, mqttViewModel)
+    checkSubscriptionErrors(
+        context = LocalContext.current,
+        scope = scope,
+        scaffoldState = scaffoldState,
+        map = mqttState.value.subscriptionMap,
+        mqttViewModel = mqttViewModel
+    )
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
@@ -111,7 +119,7 @@ fun HomeScreen(
 
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(totemState.value.totems) { item: Totem ->
-                    var deleteMsg = ""
+                    val deleteMsg: String
                     val undoLabel = stringResource(R.string.undo)
                     when (item.type) {
                         TotemType.WATER_PUMP -> {
@@ -162,6 +170,46 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }
+        }
+    }
+}
+
+fun checkSubscriptionErrors(
+    context: Context,
+    scope: CoroutineScope,
+    scaffoldState: ScaffoldState,
+    map: Map<String, Boolean>?,
+    mqttViewModel: MqttViewModel
+) {
+    if (!map.isNullOrEmpty()) {
+        if (map.values.contains(false)) {
+            scope.launch {
+                scaffoldState.snackbarHostState.showSnackbar(
+                    message = context.getString(R.string.subscription_error)
+                )
+            }
+        } else {
+            scope.launch {
+                scaffoldState.snackbarHostState.showSnackbar(
+                    message = context.getString(R.string.system_online)
+                )
+            }
+        }
+        mqttViewModel.clearSubscriptionMap()
+    }
+}
+
+@Composable
+private fun addTopicList(
+    mqttState: State<MqttState>,
+    totemState: State<HomeState>,
+    mqttViewModel: MqttViewModel
+) {
+    if (mqttState.value.isMqttConnected && totemState.value.topicList.isNotEmpty()) {
+        mqttViewModel.topicList.clear()
+        mqttViewModel.topicList.addAll(totemState.value.topicList)
+        totemState.value.topicList.forEach {
+            mqttViewModel.onEvent(MqttEvents.SubscribeToTopic(it))
         }
     }
 }

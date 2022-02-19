@@ -19,4 +19,6 @@
     <string name="water_pump_deleted">Regador eliminado</string>
     <string name="undo">Deshacer</string>
     <string name="pump_water">REGAR</string>
+    <string name="subscription_error">Hubo errores conectando algunos Totems, por favor revisa las conexiones e intenta de nuevo</string>
+    <string name="system_online">Sistema Online</string>
 </resources>

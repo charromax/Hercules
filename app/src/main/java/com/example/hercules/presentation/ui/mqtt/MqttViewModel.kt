@@ -4,14 +4,11 @@
 
 package com.example.hercules.presentation.ui.mqtt
 
-import androidx.compose.animation.core.updateTransition
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hercules.domain.model.Message
 import com.example.hercules.domain.use_case.mqtt.MqttUseCase
-import com.example.hercules.presentation.utils.Failure
 import com.example.hercules.presentation.utils.Resource
-import com.example.hercules.presentation.utils.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,12 +26,34 @@ class MqttViewModel @Inject constructor(
     private val _mqttState = MutableStateFlow(MqttState())
     val mqttState: StateFlow<MqttState> = _mqttState
     val topicList = mutableListOf<String>()
+    private val subscriptionsMap = mutableMapOf<String, Boolean>()
 
     fun onEvent(event: MqttEvents) {
         when (event) {
             MqttEvents.StartConnectionRequest -> connect()
             is MqttEvents.PublishMessage -> publish(event.topic, event.message)
-            is MqttEvents.SubscribeToTopic -> TODO()
+            is MqttEvents.SubscribeToTopic -> subscribeToTopic(event.topic, 1)
+        }
+    }
+
+    private fun publish(topic: String, message: String) {
+        viewModelScope.launch {
+            mqttUseCase.publishMessage(topic, message).collect { response ->
+                when (response) {
+                    is Resource.Success -> _mqttState.value = mqttState.value.copy(
+                        lastMessageSent = Message(
+                            topic = topic,
+                            message = message
+                        )
+                    )
+                    is Resource.UnknownError,
+                    is Resource.Error,
+                    is Resource.Failure -> _mqttState.value = mqttState.value.copy(
+                        error = "[Error] Publish message in topic $topic"
+                    )
+                    else -> throw java.lang.IllegalStateException("Undefined State")
+                }
+            }
         }
     }
 
@@ -68,7 +87,7 @@ class MqttViewModel @Inject constructor(
         }
     }
 
-    fun getMessageFromPublisher() {
+    private fun getMessageFromPublisher() {
         viewModelScope.launch {
             mqttUseCase.retrieveMessageFromPublisher().collectLatest { response ->
                 when (response) {
@@ -83,30 +102,41 @@ class MqttViewModel @Inject constructor(
         }
     }
 
-    fun subscribeToTopic(topic: String, qosLevel: Int?) {
+    private fun subscribeToTopic(topic: String, qosLevel: Int?) {
         viewModelScope.launch {
             mqttUseCase.subscribeToTopic(topic, qosLevel).collect { response ->
                 when (response) {
-                    is Resource.Success -> {
-                        _mqttState.value = mqttState.value.copy(
-                            totemSubscriptionState = mqttState.value.totemSubscriptionState?.copy(
-                                successfulTopics = mqttState.value.totemSubscriptionState?.successfulTopics.add(topic)
-                            )
-                        )
-                    }
-                    is Resource.Failure -> showToast(
-                        "[Failed] subscribe to topic ${response.message} caused by ${response.exception?.message}"
-                    )
-                    is Resource.Error -> showToast(
-                        "[Error] subscribe to topic ${response.message} caused by ${response.exception.message}"
-                    )
-                    is Resource.UnknownError -> showToast(
-                        "[UnknownError] subscribe from topic ${response.message} caused by ${response.exception.message}"
-                    )
+                    is Resource.Success -> addSuccessfulTopic(topic)
+                    is Resource.Failure -> addFailedTopic(topic)
+                    is Resource.Error -> addFailedTopic(topic)
+                    is Resource.UnknownError -> addFailedTopic(topic)
                     else -> throw IllegalStateException("Undefined State")
                 }
             }
         }
+    }
+
+    private fun addSuccessfulTopic(topic: String) {
+        subscriptionsMap[topic] = true
+        if (topicList.last() == topic)
+            _mqttState.value = mqttState.value.copy(
+                subscriptionMap = subscriptionsMap
+            )
+    }
+
+    private fun addFailedTopic(topic: String) {
+        subscriptionsMap[topic] = false
+        if (topicList.last() == topic)
+            _mqttState.value = mqttState.value.copy(
+                subscriptionMap = subscriptionsMap
+            )
+    }
+
+    fun clearSubscriptionMap() {
+        subscriptionsMap.clear()
+        _mqttState.value = mqttState.value.copy(
+            subscriptionMap = null
+        )
     }
 
     private fun onMessageReceived(messageReceived: Resource.MessageReceived<String>) {
@@ -118,37 +148,38 @@ class MqttViewModel @Inject constructor(
         )
     }
 
-    /**
-     * disconnect from mqtt broker
-     */
-    private fun disconnect() {
+    fun unsubscribe(topic: String) {
         viewModelScope.launch {
-            when (val result = mqttUseCases.disconnectMqttUseCase()) {
-                is Failure -> updateErrorState(result.error)
-                is Success -> _mqttState.value =
-                    mqttState.value.copy(isMqttConnected = false, snack = result.value)
+            mqttUseCase.unSubscribeFromTopic(topic).collect { response ->
+                when (response) {
+                    is Resource.Success -> _mqttState.value =
+                        mqttState.value.copy(snack = response.message)
+                    is Resource.Failure,
+                    is Resource.Error,
+                    is Resource.UnknownError -> _mqttState.value = mqttState.value.copy(
+                        error =
+                        "[UnknownError] unsubscribe from topic $topic"
+                    )
+                    else -> throw IllegalStateException("Undefined State")
+                }
             }
         }
     }
 
-    private fun getMessages() {
+    fun disconnect() {
         viewModelScope.launch {
-            when (val result = mqttUseCases.getMessageUseCase()) {
-                is Failure -> updateErrorState(result.error)
-                is Success -> _mqttState.value = mqttState.value.copy(
-                    lastMessageReceived = result.value
-                )
-            }
-        }
-    }
-
-    private fun publish(topic: String, data: String) {
-        viewModelScope.launch {
-            when (val result = mqttUseCases.publishMqttUseCase(topic, data)) {
-                is Failure -> updateErrorState(result.error)
-                is Success -> _mqttState.value = mqttState.value.copy(
-                    lastMessageSent = Message(topic = topic, message = data)
-                )
+            mqttUseCase.disconnectFromMQTT().collect { response ->
+                when (response) {
+                    is Resource.Success -> _mqttState.value =
+                        mqttState.value.copy(snack = response.message)
+                    is Resource.Failure,
+                    is Resource.Error,
+                    is Resource.UnknownError -> _mqttState.value = mqttState.value.copy(
+                        error =
+                        "[UnknownError] disconnect from MQTT"
+                    )
+                    else -> throw IllegalStateException("Undefined State")
+                }
             }
         }
     }

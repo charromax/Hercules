@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
+ */
+
 package com.example.hercules.domain.use_case.mqtt
 
 import com.example.hercules.presentation.utils.Resource
@@ -14,6 +18,8 @@ interface MqttUseCase {
     fun subscribeToTopic(topic: String, qosLevel: Int?): Flow<Resource<Nothing>>
 
     fun retrieveMessageFromPublisher(): Flow<Resource<String>>
+
+    fun publishMessage(topic: String, message: String): Flow<Resource<Nothing>>
 
     fun unSubscribeFromTopic(topic: String): Flow<Resource<Nothing>>
 
