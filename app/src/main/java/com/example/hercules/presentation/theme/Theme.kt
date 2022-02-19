@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
+ */
+
 package com.example.hercules.presentation.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -7,10 +11,10 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 
 private val DarkColorPalette = darkColors(
-    primary = Yellow200,
-    primaryVariant = Yellow700,
+    primary = Green200,
+    primaryVariant = Green700,
     secondary = Accent200,
-    secondaryVariant= Accent500,
+    secondaryVariant = Accent500,
     background = DarkGray,
     onBackground = LightText,
     surface = MediumGray,
@@ -21,10 +25,10 @@ private val DarkColorPalette = darkColors(
 )
 
 private val LightColorPalette = lightColors(
-    primary = Yellow500,
-    primaryVariant = Yellow700,
-    secondary = Yellow200,
-    secondaryVariant= Yellow500,
+    primary = Green500,
+    primaryVariant = Green700,
+    secondary = Green200,
+    secondaryVariant = Green500,
     background = OffWhite,
     onBackground = DarkText,
     surface = LightestGray,

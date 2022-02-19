@@ -1,13 +1,17 @@
+/*
+ * Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
+ */
+
 package com.example.hercules.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 
 val OffWhite = Color(0xFFF4F4F4)
-val Yellow200 = Color(0xFFFFE082)
-val Yellow500 = Color(0xFFFFC107)
-val Yellow700 = Color(0xFFFFA000)
-val Accent200 = Color(0xFFFFAB91)
-val Accent500 = Color(0xFFF44336)
+val Green200 = Color(0xFFA5D6A7)
+val Green500 = Color(0xFF4CAF50)
+val Green700 = Color(0xFF4CAF50)
+val Accent200 = Color(0xFFF48FB1)
+val Accent500 = Color(0xFFE91E63)
 val DarkText = Color(0xFF141414)
 val LightText = Color(0xFFFFFFFF)
 val DarkGray = Color(0xFF1D1D1D)
