@@ -8,6 +8,7 @@ import com.example.hercules.domain.model.Message
 
 data class MqttState(
     val isMqttConnected: Boolean = false,
+    val isMqttSubscribed: Boolean = false,
     val lastMessageReceived: Message? = null,
     val lastMessageSent: Message? = null,
     val snack: String? = null,

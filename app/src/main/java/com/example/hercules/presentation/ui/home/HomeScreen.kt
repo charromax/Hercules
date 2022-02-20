@@ -196,16 +196,17 @@ fun checkSubscriptionErrors(
             }
         }
         mqttViewModel.clearSubscriptionMap()
+        mqttViewModel.clearError()
+        mqttViewModel.clearSnack()
     }
 }
 
-@Composable
 private fun addTopicList(
     mqttState: State<MqttState>,
     totemState: State<HomeState>,
     mqttViewModel: MqttViewModel
 ) {
-    if (mqttState.value.isMqttConnected && totemState.value.topicList.isNotEmpty()) {
+    if (mqttState.value.isMqttConnected && !mqttState.value.isMqttSubscribed && totemState.value.topicList.isNotEmpty()) {
         mqttViewModel.topicList.clear()
         mqttViewModel.topicList.addAll(totemState.value.topicList)
         totemState.value.topicList.forEach {

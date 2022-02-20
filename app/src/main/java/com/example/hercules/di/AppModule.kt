@@ -50,7 +50,9 @@ object AppModule {
             app.applicationContext,
             HerculesDB::class.java,
             "hercules.db"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     @Provides
@@ -96,9 +98,8 @@ object AppModule {
     @Provides
     @Singleton
     fun provideMqttRepository(
-        mqttDataSource: MqttDataSource,
-        scope: CoroutineScope
+        mqttDataSource: MqttDataSource
     ): MqttRepository {
-        return MqttRepositoryImpl(mqttDataSource, scope)
+        return MqttRepositoryImpl(mqttDataSource)
     }
 }

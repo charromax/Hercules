@@ -9,6 +9,7 @@ import com.example.hercules.data.remote.mqtt.MqttResponse
 import com.example.hercules.data.repository.MqttRepository
 import com.example.hercules.presentation.utils.Resource
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -21,8 +22,7 @@ import javax.inject.Inject
 @InternalCoroutinesApi
 @ExperimentalCoroutinesApi
 class MqttRepositoryImpl @Inject constructor(
-    private val mqttDataSource: MqttDataSource,
-    private val scope: CoroutineScope
+    private val mqttDataSource: MqttDataSource
 ) : MqttRepository {
 
     override fun connectToMQTT(): Flow<Resource<Nothing>> = flow {
@@ -45,7 +45,7 @@ class MqttRepositoryImpl @Inject constructor(
                 else -> throw IllegalStateException("Undefined State")
             }
         }
-    }.flowOn(scope.coroutineContext)
+    }.flowOn(Dispatchers.IO)
 
     override fun disconnectFromMQTT(): Flow<Resource<Nothing>> = flow {
 
@@ -69,7 +69,7 @@ class MqttRepositoryImpl @Inject constructor(
             }
         }
 
-    }.flowOn(scope.coroutineContext)
+    }.flowOn(Dispatchers.IO)
 
     override fun isMQTTConnected(): Boolean = mqttDataSource.isMQTTConnected()
 
@@ -98,7 +98,7 @@ class MqttRepositoryImpl @Inject constructor(
             }
         }
 
-    }.flowOn(scope.coroutineContext)
+    }.flowOn(Dispatchers.IO)
 
     override fun unSubscribeFromTopic(topic: String): Flow<Resource<Nothing>> = flow {
         mqttDataSource.unSubscribeFromTopic(topic).collect { response ->
@@ -121,7 +121,7 @@ class MqttRepositoryImpl @Inject constructor(
             }
         }
 
-    }.flowOn(scope.coroutineContext)
+    }.flowOn(Dispatchers.IO)
 
     override fun retrieveMessageFromPublisher(): Flow<Resource<String>> = flow {
 
@@ -145,7 +145,7 @@ class MqttRepositoryImpl @Inject constructor(
             }
         }
 
-    }.flowOn(scope.coroutineContext)
+    }.flowOn(Dispatchers.IO)
 
     override fun publishMessage(topic: String, message: String): Flow<Resource<Nothing>> = flow {
         mqttDataSource.publishMessageInTopic(topic, message).collect { response ->
@@ -168,5 +168,5 @@ class MqttRepositoryImpl @Inject constructor(
             }
         }
 
-    }.flowOn(scope.coroutineContext)
+    }.flowOn(Dispatchers.IO)
 }

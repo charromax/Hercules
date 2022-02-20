@@ -37,6 +37,14 @@ class MqttViewModel @Inject constructor(
         }
     }
 
+    fun clearSnack() {
+        _mqttState.value = mqttState.value.copy(snack = null)
+    }
+
+    fun clearError() {
+        _mqttState.value = mqttState.value.copy(error = null)
+    }
+
     private fun publish(topic: String, message: String) {
         viewModelScope.launch {
             mqttUseCase.publishMessage(topic, message).collect { response ->
@@ -123,7 +131,8 @@ class MqttViewModel @Inject constructor(
         subscriptionsMap[topic] = true
         if (topicList.last() == topic)
             _mqttState.value = mqttState.value.copy(
-                subscriptionMap = subscriptionsMap
+                subscriptionMap = subscriptionsMap,
+                isMqttSubscribed = true
             )
     }
 

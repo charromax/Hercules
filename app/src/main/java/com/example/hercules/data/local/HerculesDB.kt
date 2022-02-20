@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase
 import com.example.hercules.data.model.DBTotem
 
 // Annotates class to be a Room Database with a table (entity) of the Sensor class
-@Database(entities = [DBTotem::class], version = 1, exportSchema = false)
+@Database(entities = [DBTotem::class], version = 2, exportSchema = false)
 abstract class HerculesDB : RoomDatabase() {
 
     abstract fun sensorDao(): TotemDao
