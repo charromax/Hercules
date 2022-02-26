@@ -6,14 +6,13 @@ package com.example.hercules.domain.repository
 
 import com.example.hercules.data.local.TotemDao
 import com.example.hercules.data.model.DBTotem
-import com.example.hercules.data.repository.SensorsRepository
-import com.example.hercules.domain.model.Sensor
+import com.example.hercules.data.repository.TotemRepository
 import com.example.hercules.domain.model.Totem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class SensorRepositoryImpl @Inject constructor(private val dao: TotemDao): SensorsRepository {
+class SensorRepositoryImpl @Inject constructor(private val dao: TotemDao) : TotemRepository {
     override fun getAllTotems(): Flow<List<Totem>> {
         return dao.getAllTotems().map { list ->
             list.map { it.toTotem() }

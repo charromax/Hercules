@@ -8,10 +8,10 @@ import com.example.hercules.data.repository.TotemRepository
 import com.example.hercules.domain.model.Totem
 import javax.inject.Inject
 
-class DeleteSensorUseCase @Inject constructor(
+class GetTotemByIdUseCase @Inject constructor(
     private val repo: TotemRepository
 ) {
-    suspend operator fun invoke(totem: Totem) {
-        repo.deleteSensor(totem.toDBObject())
+    suspend operator fun invoke(id: Int): Totem? {
+        return repo.getTotemByID(id)
     }
 }

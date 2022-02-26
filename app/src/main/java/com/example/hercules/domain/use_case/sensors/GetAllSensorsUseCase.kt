@@ -1,7 +1,11 @@
+/*
+ * Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
+ */
+
 package com.example.hercules.domain.use_case.sensors
 
 
-import com.example.hercules.data.repository.SensorsRepository
+import com.example.hercules.data.repository.TotemRepository
 import com.example.hercules.domain.model.Sensor
 import com.example.hercules.domain.model.Totem
 import com.example.hercules.presentation.utils.Order
@@ -11,7 +15,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class GetAllSensorsUseCase @Inject constructor(
-    private val repo: SensorsRepository
+    private val repo: TotemRepository
 ) {
 
     operator fun invoke(sensorOrder: SensorOrder = SensorOrder.Topic(Order.Ascending)): Flow<List<Totem>> {

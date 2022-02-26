@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
+ */
+
 package com.example.hercules.presentation.ui.home
 
 import androidx.compose.foundation.background
@@ -16,7 +20,7 @@ import com.example.hercules.presentation.ui.mqtt.MqttViewModel
 
 @Composable
 fun HerculesHome(
-    sensorViewModel: SensorsViewModel = viewModel(),
+    sensorViewModel: TotemsViewModel = viewModel(),
     mqttViewModel: MqttViewModel
 ) {
     val state = sensorViewModel.homeState.collectAsState()

@@ -43,7 +43,7 @@ private const val TAG = "SENSOR_LIST"
 @ExperimentalAnimationApi
 @Composable
 fun HomeScreen(
-    sensorViewModel: SensorsViewModel = viewModel(),
+    sensorViewModel: TotemsViewModel = viewModel(),
     mqttViewModel: MqttViewModel
 ) {
     val totemState = sensorViewModel.homeState.collectAsState()
@@ -216,7 +216,7 @@ private fun addTopicList(
 }
 
 private fun deleteTotem(
-    sensorViewModel: SensorsViewModel,
+    sensorViewModel: TotemsViewModel,
     totem: Totem,
     scope: CoroutineScope,
     scaffoldState: ScaffoldState,

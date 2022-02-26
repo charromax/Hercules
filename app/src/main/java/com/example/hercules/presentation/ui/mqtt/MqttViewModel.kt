@@ -57,9 +57,7 @@ class MqttViewModel @Inject constructor(
                     )
                     is Resource.UnknownError,
                     is Resource.Error,
-                    is Resource.Failure -> _mqttState.value = mqttState.value.copy(
-                        error = "[Error] Publish message in topic $topic"
-                    )
+                    is Resource.Failure -> updateErrorState("[Error] Publish message in topic $topic")
                     else -> {
                         throw java.lang.IllegalStateException(UNDEFINED)
                     }
@@ -168,10 +166,7 @@ class MqttViewModel @Inject constructor(
                         mqttState.value.copy(snack = response.message)
                     is Resource.Failure,
                     is Resource.Error,
-                    is Resource.UnknownError -> _mqttState.value = mqttState.value.copy(
-                        error =
-                        "[UnknownError] unsubscribe from topic $topic"
-                    )
+                    is Resource.UnknownError -> updateErrorState("[UnknownError] unsubscribe from topic $topic")
                     else -> throw IllegalStateException(UNDEFINED)
                 }
             }
@@ -186,10 +181,7 @@ class MqttViewModel @Inject constructor(
                         mqttState.value.copy(snack = response.message)
                     is Resource.Failure,
                     is Resource.Error,
-                    is Resource.UnknownError -> _mqttState.value = mqttState.value.copy(
-                        error =
-                        "[UnknownError] disconnect from MQTT"
-                    )
+                    is Resource.UnknownError -> updateErrorState("[UnknownError] disconnect from MQTT")
                     else -> throw IllegalStateException(UNDEFINED)
                 }
             }

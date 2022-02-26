@@ -5,11 +5,10 @@
 package com.example.hercules.data.repository
 
 import com.example.hercules.data.model.DBTotem
-import com.example.hercules.domain.model.Sensor
 import com.example.hercules.domain.model.Totem
 import kotlinx.coroutines.flow.Flow
 
-interface SensorsRepository {
+interface TotemRepository {
     fun getAllTotems(): Flow<List<Totem>>
     suspend fun getTotemByID(id: Int): Totem?
     suspend fun addNewTotem(totem: DBTotem)

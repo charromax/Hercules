@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
+ */
+
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
@@ -93,4 +97,12 @@ dependencies {
     //HILT
     implementation "com.google.dagger:hilt-android:2.40"
     kapt "com.google.dagger:hilt-android-compiler:2.40"
+    implementation 'androidx.hilt:hilt-work:1.0.0'
+    kapt 'androidx.hilt:hilt-compiler:1.0.0'
+    
+    // WORK MANAGER
+    implementation "androidx.work:work-runtime-ktx:2.7.1"
+
+    //GSON
+    implementation 'com.google.code.gson:gson:2.8.6'
 }
