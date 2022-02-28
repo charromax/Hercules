@@ -21,10 +21,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.hercules.R
-import com.example.hercules.data.model.DBTotem
 import com.example.hercules.domain.model.*
+import com.example.hercules.presentation.ui.Screen
 import com.example.hercules.presentation.ui.home.components.HomeHeader
 import com.example.hercules.presentation.ui.home.components.WaterPumpListItem
 import com.example.hercules.presentation.ui.home.components.totems.MagneticSensor
@@ -43,14 +43,15 @@ private const val TAG = "SENSOR_LIST"
 @ExperimentalAnimationApi
 @Composable
 fun HomeScreen(
-    sensorViewModel: TotemsViewModel = viewModel(),
+    navController: NavController,
+    totemsViewModel: TotemsViewModel,
     mqttViewModel: MqttViewModel
 ) {
-    val totemState = sensorViewModel.homeState.collectAsState()
     val mqttState = mqttViewModel.mqttState.collectAsState()
+    val homeState = totemsViewModel.homeState.collectAsState()
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
-    addTopicList(mqttState, totemState, mqttViewModel)
+    addTopicList(mqttState, homeState, mqttViewModel)
     checkSubscriptionErrors(
         context = LocalContext.current,
         scope = scope,
@@ -62,24 +63,7 @@ fun HomeScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    sensorViewModel.onEvent(
-                        HomeEvents.OnAddTotem(
-                            DBTotem(
-                                topic = "home/terrace/pump",
-                                name = "Regador",
-                                totemType = TotemType.WATER_PUMP
-                            )
-                        )
-                    )
-                    sensorViewModel.onEvent(
-                        HomeEvents.OnAddTotem(
-                            DBTotem(
-                                topic = "home/office/door",
-                                name = "Sensor Puerta",
-                                totemType = TotemType.MAG_SENSOR
-                            )
-                        )
-                    )
+                    navController.navigate(Screen.AddTotemScreen.route)
                 },
                 backgroundColor = MaterialTheme.colors.primary
             ) {
@@ -97,14 +81,14 @@ fun HomeScreen(
                 .fillMaxSize()
         ) {
             HomeHeader(
-                isVisible = totemState.value.isOrderSectionVisible,
-                order = totemState.value.sensorOrder,
+                isVisible = homeState.value.isOrderSectionVisible,
+                order = homeState.value.sensorOrder,
                 onToggleOrderButton = {
                     //order button clicked
-                    sensorViewModel.onEvent(HomeEvents.OnToggleSectionOrder)
+                    totemsViewModel.onEvent(HomeEvents.OnToggleSectionOrder)
                 },
                 onOrderChange = {
-                    sensorViewModel.onEvent(HomeEvents.OnOrderChange(it))
+                    totemsViewModel.onEvent(HomeEvents.OnOrderChange(it))
                 },
                 headerTitle = {
                     Text(
@@ -118,7 +102,7 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(totemState.value.totems) { item: Totem ->
+                items(homeState.value.totems) { item: Totem ->
                     val deleteMsg: String
                     val undoLabel = stringResource(R.string.undo)
                     when (item.type) {
@@ -133,7 +117,7 @@ fun HomeScreen(
                                 },
                                 onDeleteButtonClicked = {
                                     deleteTotem(
-                                        sensorViewModel,
+                                        totemsViewModel,
                                         it,
                                         scope,
                                         scaffoldState,
@@ -157,7 +141,7 @@ fun HomeScreen(
                                 },
                                 onDeleteButtonClicked = {
                                     deleteTotem(
-                                        sensorViewModel,
+                                        totemsViewModel,
                                         it,
                                         scope,
                                         scaffoldState,

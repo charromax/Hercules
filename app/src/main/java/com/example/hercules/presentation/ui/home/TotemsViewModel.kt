@@ -36,10 +36,6 @@ class TotemsViewModel @Inject constructor(
 
     private var recentlyDeletedSensor: Totem? = null
 
-    var newTotemName = ""
-    var newTotemTopic = ""
-    var newTotemType: TotemType? = null
-
     private var getAllSensorsJob: Job? = null
 
     init {
@@ -71,6 +67,18 @@ class TotemsViewModel @Inject constructor(
         }
     }
 
+    fun updateTotemName(value: String) {
+        _addTotemScreenState.value = addTotemScreenState.value.copy(
+            newTotemName = value
+        )
+    }
+
+    fun updateTotemTopic(value: String) {
+        _addTotemScreenState.value = addTotemScreenState.value.copy(
+            newTotemTopic = value
+        )
+    }
+
     private fun onAddNewTotemClicked() {
         if (checkTotemName()) {
             updateErrorState("Nombre inválido")
@@ -80,38 +88,32 @@ class TotemsViewModel @Inject constructor(
             updateErrorState("Topic inválido")
             return
         }
-        newTotemType?.let {
-            addTotem(
-                DBTotem(
-                    topic = newTotemTopic,
-                    name = newTotemName,
-                    totemType = it
-                )
+        addTotem(
+            DBTotem(
+                topic = _addTotemScreenState.value.newTotemTopic ?: "",
+                name = _addTotemScreenState.value.newTotemName ?: "",
+                totemType = _addTotemScreenState.value.selectedTotemType
             )
-            _addTotemScreenState.value = addTotemScreenState.value.copy(
-                snack = "Totem guardado!"
-            )
-        } ?: run {
-            updateErrorState("Totem no reconocido")
-            return
-        }
-
+        )
+        _addTotemScreenState.value = addTotemScreenState.value.copy(
+            snack = "Totem guardado!",
+            isSaveSuccessful = true
+        )
     }
 
     private fun checkTotemTopic(): Boolean {
-        if (newTotemTopic.isBlank()) return true
-        if (newTotemTopic.contains(" ")) return true
-        if (!newTotemTopic.contains("/")) return true
-        if (newTotemTopic.contains("\\")) return true
+        if (_addTotemScreenState.value.newTotemTopic?.isBlank() == true) return true
+        if (_addTotemScreenState.value.newTotemTopic?.contains(" ") == true) return true
+        if (_addTotemScreenState.value.newTotemTopic?.contains("/") == false) return true
+        if (_addTotemScreenState.value.newTotemTopic?.contains("\\") == true) return true
         return false
     }
 
     private fun checkTotemName(): Boolean {
-        return newTotemName.isBlank()
+        return _addTotemScreenState.value.newTotemName?.isBlank() == true
     }
 
     private fun updateSelectedTotem(type: TotemType) {
-        newTotemType = type
         _addTotemScreenState.value = addTotemScreenState.value.copy(
             selectedTotemType = type
         )

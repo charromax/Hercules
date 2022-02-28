@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
+ */
+
 package com.example.hercules.presentation.ui.add_sensor.components
 
 import androidx.compose.foundation.border
@@ -13,7 +17,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.hercules.R
 import com.example.hercules.domain.model.TotemType
-import com.example.hercules.presentation.ui.add_sensor.AddTotemScreenEvents
 
 
 @Composable
@@ -37,17 +40,16 @@ fun TotemTypeDropDownButton(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            horizontalArrangement = Arrangement.Start,
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            Text(text = selectedTotemType.alias)
             Icon(
                 painter = painterResource(id = R.drawable.ic_drop_down),
                 contentDescription = null,
                 modifier = Modifier.size(20.dp, 20.dp),
                 tint = MaterialTheme.colors.onSurface
             )
-            Text(text = selectedTotemType.name)
-
             TotemTypeDropDown(
                 isDDExpanded = isDDExpanded,
                 onSelected = onSelected,

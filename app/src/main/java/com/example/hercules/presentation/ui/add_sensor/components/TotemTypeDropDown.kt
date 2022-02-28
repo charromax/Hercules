@@ -7,20 +7,18 @@ package com.example.hercules.presentation.ui.add_sensor.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import com.example.hercules.domain.model.TotemType
 
 @Composable
 fun TotemTypeDropDown(
     onSelected: (TotemType) -> Unit,
-    modifier: Modifier = Modifier,
     isDDExpanded: Boolean = false,
     onDismissRequested: () -> Unit
 ) {
@@ -28,7 +26,7 @@ fun TotemTypeDropDown(
     DropdownMenu(
         expanded = isDDExpanded,
         onDismissRequest = onDismissRequested,
-        modifier = modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
     ) {
         listOfTypes.forEach { totemType ->
             DropdownMenuItem(
@@ -36,15 +34,19 @@ fun TotemTypeDropDown(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
                         painter = painterResource(id = totemType.icon),
-                        contentDescription = totemType.name
+                        contentDescription = totemType.name,
+                        tint = MaterialTheme.colors.primary,
+                        modifier = Modifier.padding(8.dp)
                     )
-                    Text(text = totemType.name)
+                    Text(text = totemType.alias, color = MaterialTheme.colors.onSurface)
                 }
 
             }

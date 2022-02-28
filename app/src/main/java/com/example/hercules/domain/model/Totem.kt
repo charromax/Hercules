@@ -11,9 +11,9 @@ enum class PowerState {
     ON, OFF
 }
 
-enum class TotemType(val icon: Int) {
-    WATER_PUMP(R.drawable.ic_water_pump),
-    MAG_SENSOR(R.drawable.ic_door_sensor),
+enum class TotemType(val icon: Int, val alias: String) {
+    WATER_PUMP(R.drawable.ic_water_pump, "Regador"),
+    MAG_SENSOR(R.drawable.ic_door_sensor, "Sensor Magnetico"),
 }
 
 enum class BasicInstructionSet {
