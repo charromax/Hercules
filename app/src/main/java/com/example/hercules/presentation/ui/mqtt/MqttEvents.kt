@@ -11,6 +11,8 @@ sealed class MqttEvents {
         val topic: String
     ) : MqttEvents()
 
+    object RefreshSubscription : MqttEvents()
+
     data class PublishMessage(
         val topic: String,
         val message: String

@@ -97,7 +97,9 @@ class TotemsViewModel @Inject constructor(
         )
         _addTotemScreenState.value = addTotemScreenState.value.copy(
             snack = "Totem guardado!",
-            isSaveSuccessful = true
+            isSaveSuccessful = true,
+            newTotemName = null,
+            newTotemTopic = null
         )
     }
 
@@ -115,7 +117,8 @@ class TotemsViewModel @Inject constructor(
 
     private fun updateSelectedTotem(type: TotemType) {
         _addTotemScreenState.value = addTotemScreenState.value.copy(
-            selectedTotemType = type
+            selectedTotemType = type,
+            isDropDownExpanded = false
         )
     }
 
@@ -123,14 +126,6 @@ class TotemsViewModel @Inject constructor(
         _addTotemScreenState.value = addTotemScreenState.value.copy(
             isDropDownExpanded = !addTotemScreenState.value.isDropDownExpanded
         )
-    }
-
-    private fun navigateToAddSensorScreen() {
-        viewModelScope.launch {
-            _homeState.value = homeState.value.copy(
-                navigateToAddSensorScreen = true
-            )
-        }
     }
 
     private fun toggleOrderSectionVisibility() {

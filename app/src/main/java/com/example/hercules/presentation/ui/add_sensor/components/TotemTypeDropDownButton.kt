@@ -4,6 +4,7 @@
 
 package com.example.hercules.presentation.ui.add_sensor.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -32,12 +33,14 @@ fun TotemTypeDropDownButton(
         modifier = modifier
             .fillMaxSize()
             .wrapContentSize(Alignment.TopStart)
-            .padding(top = 10.dp)
+            .padding(top = 8.dp)
+            .background(shape = MaterialTheme.shapes.small, color = MaterialTheme.colors.background)
             .border(0.5.dp, MaterialTheme.colors.onSurface.copy(alpha = 0.5f))
             .clickable(onClick = onClick),
+
     ) {
         Row(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,

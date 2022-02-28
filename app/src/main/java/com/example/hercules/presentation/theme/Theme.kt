@@ -34,8 +34,8 @@ private val LightColorPalette = lightColors(
     surface = LightestGray,
     onSurface = DarkText,
     error = ErrorColor,
-    onSecondary = DarkText,
-    onPrimary = DarkText
+    onSecondary = LightText,
+    onPrimary = LightText
 
 )
 

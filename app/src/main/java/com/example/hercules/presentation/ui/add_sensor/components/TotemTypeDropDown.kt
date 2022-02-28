@@ -26,7 +26,9 @@ fun TotemTypeDropDown(
     DropdownMenu(
         expanded = isDDExpanded,
         onDismissRequest = onDismissRequested,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
     ) {
         listOfTypes.forEach { totemType ->
             DropdownMenuItem(

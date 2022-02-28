@@ -38,7 +38,8 @@ fun Navigation() {
         composable(route = Screen.AddTotemScreen.route) {
             AddTotemScreen(
                 navController = navController,
-                totemsViewModel = viewModel(viewModelStoreOwner = viewModelStoreOwner)
+                totemsViewModel = viewModel(viewModelStoreOwner = viewModelStoreOwner),
+                mqttViewModel = viewModel(viewModelStoreOwner = viewModelStoreOwner)
             )
         }
     }

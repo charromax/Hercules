@@ -34,7 +34,14 @@ class MqttViewModel @Inject constructor(
             MqttEvents.StartConnectionRequest -> connect()
             is MqttEvents.PublishMessage -> publish(event.topic, event.message)
             is MqttEvents.SubscribeToTopic -> subscribeToTopic(event.topic, 1)
+            MqttEvents.RefreshSubscription -> shouldRefreshSubscriptions()
         }
+    }
+
+    private fun shouldRefreshSubscriptions() {
+        _mqttState.value = mqttState.value.copy(
+            isMqttSubscribed = false
+        )
     }
 
     fun clearSnack() {

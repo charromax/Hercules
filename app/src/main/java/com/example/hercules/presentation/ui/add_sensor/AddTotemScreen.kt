@@ -18,15 +18,21 @@ import androidx.navigation.NavController
 import com.example.hercules.R
 import com.example.hercules.presentation.ui.add_sensor.components.TotemTypeDropDownButton
 import com.example.hercules.presentation.ui.home.TotemsViewModel
+import com.example.hercules.presentation.ui.mqtt.MqttEvents
+import com.example.hercules.presentation.ui.mqtt.MqttViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun AddTotemScreen(
     navController: NavController,
-    totemsViewModel: TotemsViewModel
+    totemsViewModel: TotemsViewModel,
+    mqttViewModel: MqttViewModel
 ) {
     val state = totemsViewModel.addTotemScreenState.collectAsState()
-    if (state.value.isSaveSuccessful) navController.navigateUp()
+    if (state.value.isSaveSuccessful) {
+        mqttViewModel.onEvent(MqttEvents.RefreshSubscription)
+        navController.navigateUp()
+    }
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
 
