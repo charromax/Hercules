@@ -4,6 +4,7 @@
 
 package com.example.hercules.domain.model
 
+import com.example.hercules.R
 import com.example.hercules.data.model.DBTotem
 
 enum class PowerState {
@@ -11,8 +12,8 @@ enum class PowerState {
 }
 
 enum class TotemType(val icon: Int) {
-    WATER_PUMP(),
-    MAG_SENSOR(),
+    WATER_PUMP(R.drawable.ic_water_pump),
+    MAG_SENSOR(R.drawable.ic_door_sensor),
 }
 
 enum class BasicInstructionSet {

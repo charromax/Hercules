@@ -63,7 +63,7 @@ fun HomeScreen(
             FloatingActionButton(
                 onClick = {
                     sensorViewModel.onEvent(
-                        HomeEvents.OnAddSensor(
+                        HomeEvents.OnAddTotem(
                             DBTotem(
                                 topic = "home/terrace/pump",
                                 name = "Regador",
@@ -72,7 +72,7 @@ fun HomeScreen(
                         )
                     )
                     sensorViewModel.onEvent(
-                        HomeEvents.OnAddSensor(
+                        HomeEvents.OnAddTotem(
                             DBTotem(
                                 topic = "home/office/door",
                                 name = "Sensor Puerta",

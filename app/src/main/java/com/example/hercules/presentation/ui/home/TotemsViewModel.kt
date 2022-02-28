@@ -10,6 +10,8 @@ import com.example.hercules.data.model.DBTotem
 import com.example.hercules.domain.model.Totem
 import com.example.hercules.domain.model.TotemType
 import com.example.hercules.domain.use_case.sensors.TotemUseCases
+import com.example.hercules.presentation.ui.add_sensor.AddTotemScreenEvents
+import com.example.hercules.presentation.ui.add_sensor.AddTotemScreenState
 import com.example.hercules.presentation.utils.Order
 import com.example.hercules.presentation.utils.SensorOrder
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,6 +30,9 @@ class TotemsViewModel @Inject constructor(
 
     private val _homeState = MutableStateFlow(HomeState())
     val homeState: StateFlow<HomeState> = _homeState
+
+    private val _addTotemScreenState = MutableStateFlow(AddTotemScreenState())
+    val addTotemScreenState: StateFlow<AddTotemScreenState> = _addTotemScreenState
 
     private var recentlyDeletedSensor: Totem? = null
 
@@ -49,9 +54,73 @@ class TotemsViewModel @Inject constructor(
             is HomeEvents.OnDeleteTotem -> deleteTotem(event.totem)
             is HomeEvents.OnOrderChange -> checkIfOrderChangedThenChangeOrder(event)
             HomeEvents.OnUndoDelete -> restoreDeletedSensor()
-            is HomeEvents.OnAddSensor -> addSensor(event.totem)
+            is HomeEvents.OnAddTotem -> addTotem(event.totem)
             HomeEvents.OnToggleSectionOrder -> toggleOrderSectionVisibility()
         }
+    }
+
+    /**
+     * UI triggered events
+     */
+    fun onEvent(event: AddTotemScreenEvents) {
+        when (event) {
+            is AddTotemScreenEvents.OnAddNewTotem -> onAddNewTotemClicked()
+            AddTotemScreenEvents.OnDropDownDismissed -> onDropDownUpdate()
+            AddTotemScreenEvents.OnDropDownOpen -> onDropDownUpdate()
+            is AddTotemScreenEvents.OnTotemTypeSelected -> updateSelectedTotem(event.type)
+        }
+    }
+
+    private fun onAddNewTotemClicked() {
+        if (checkTotemName()) {
+            updateErrorState("Nombre inválido")
+            return
+        }
+        if (checkTotemTopic()) {
+            updateErrorState("Topic inválido")
+            return
+        }
+        newTotemType?.let {
+            addTotem(
+                DBTotem(
+                    topic = newTotemTopic,
+                    name = newTotemName,
+                    totemType = it
+                )
+            )
+            _addTotemScreenState.value = addTotemScreenState.value.copy(
+                snack = "Totem guardado!"
+            )
+        } ?: run {
+            updateErrorState("Totem no reconocido")
+            return
+        }
+
+    }
+
+    private fun checkTotemTopic(): Boolean {
+        if (newTotemTopic.isBlank()) return true
+        if (newTotemTopic.contains(" ")) return true
+        if (!newTotemTopic.contains("/")) return true
+        if (newTotemTopic.contains("\\")) return true
+        return false
+    }
+
+    private fun checkTotemName(): Boolean {
+        return newTotemName.isBlank()
+    }
+
+    private fun updateSelectedTotem(type: TotemType) {
+        newTotemType = type
+        _addTotemScreenState.value = addTotemScreenState.value.copy(
+            selectedTotemType = type
+        )
+    }
+
+    private fun onDropDownUpdate() {
+        _addTotemScreenState.value = addTotemScreenState.value.copy(
+            isDropDownExpanded = !addTotemScreenState.value.isDropDownExpanded
+        )
     }
 
     private fun navigateToAddSensorScreen() {
@@ -115,9 +184,15 @@ class TotemsViewModel @Inject constructor(
             }.launchIn(viewModelScope)
     }
 
-    private fun addSensor(totem: DBTotem) {
+    private fun addTotem(totem: DBTotem) {
         viewModelScope.launch {
             totemUseCases.saveNewSensor(totem)
         }
+    }
+
+    private fun updateErrorState(error: String) {
+        _addTotemScreenState.value = addTotemScreenState.value.copy(
+            error = error
+        )
     }
 }

@@ -9,6 +9,6 @@ sealed class HomeEvents {
     object OnToggleSectionOrder:HomeEvents()
     data class OnOrderChange(val sensorOrder: SensorOrder): HomeEvents()
     data class OnDeleteTotem(val totem: Totem): HomeEvents()
-    data class OnAddSensor(val totem: DBTotem): HomeEvents()
+    data class OnAddTotem(val totem: DBTotem): HomeEvents()
     object OnUndoDelete: HomeEvents()
 }
