@@ -13,6 +13,7 @@ val Shapes = Shapes(
     medium = RoundedCornerShape(16.dp),
     large = RoundedCornerShape(20.dp)
 )
-val HerculesShapes = androidx.compose.material.Shapes(
+
+val BottomRoundShapes = Shapes(
     medium = RoundedCornerShape(bottomEnd = 16.dp, bottomStart = 16.dp)
 )

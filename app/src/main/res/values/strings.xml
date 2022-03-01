@@ -22,4 +22,6 @@
     <string name="subscription_error">Hubo errores conectando algunos Totems, por favor revisa las conexiones e intenta de nuevo</string>
     <string name="system_online">Sistema Online</string>
     <string name="save">Guardar</string>
+    <string name="back">Back</string>
+    <string name="new_totem">Nuevo Totem</string>
 </resources>

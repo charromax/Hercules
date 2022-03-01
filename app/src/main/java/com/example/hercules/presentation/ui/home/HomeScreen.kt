@@ -81,7 +81,7 @@ fun HomeScreen(
                 .fillMaxSize()
         ) {
             HomeHeader(
-                isVisible = homeState.value.isOrderSectionVisible,
+                isOrderSectionVisible = homeState.value.isOrderSectionVisible,
                 order = homeState.value.sensorOrder,
                 onToggleOrderButton = {
                     //order button clicked
@@ -90,13 +90,7 @@ fun HomeScreen(
                 onOrderChange = {
                     totemsViewModel.onEvent(HomeEvents.OnOrderChange(it))
                 },
-                headerTitle = {
-                    Text(
-                        text = stringResource(R.string.sensors_in_your_network),
-                        style = MaterialTheme.typography.h6,
-                        color = MaterialTheme.colors.onPrimary
-                    )
-                }
+                headerTitle = stringResource(id = R.string.sensors_in_your_network)
             )
 
             Spacer(modifier = Modifier.height(16.dp))

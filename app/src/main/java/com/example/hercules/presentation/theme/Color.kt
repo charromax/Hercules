@@ -7,7 +7,7 @@ package com.example.hercules.presentation.theme
 import androidx.compose.ui.graphics.Color
 
 val OffWhite = Color(0xFFF4F4F4)
-val Green200 = Color(0xFFA5D6A7)
+val Green900 = Color(0xFF004D40)
 val Green500 = Color(0xFF4CAF50)
 val Green700 = Color(0xFF4CAF50)
 val Accent200 = Color(0xFFF48FB1)

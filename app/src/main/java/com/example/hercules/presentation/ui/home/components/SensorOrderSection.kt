@@ -1,6 +1,9 @@
+/*
+ * Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
+ */
+
 package com.example.hercules.presentation.ui.home.components
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
@@ -10,11 +13,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.hercules.R
-import com.example.hercules.domain.model.Sensor
-import com.example.hercules.presentation.theme.HerculesShapes
+import com.example.hercules.presentation.theme.BottomRoundShapes
 import com.example.hercules.presentation.utils.Order
 import com.example.hercules.presentation.utils.SensorOrder
-import org.joda.time.DateTime
 
 @Composable
 fun SensorOrderSection(
@@ -25,7 +26,7 @@ fun SensorOrderSection(
     Column(
         modifier = modifier.background(
             color = MaterialTheme.colors.primary,
-            shape = HerculesShapes.medium
+            shape = BottomRoundShapes.medium
         )
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {

@@ -27,6 +27,7 @@ import com.example.hercules.domain.model.PowerState
 import com.example.hercules.domain.model.Regador
 import com.example.hercules.domain.model.Totem
 import com.example.hercules.domain.model.TotemType
+import com.example.hercules.presentation.ui.components.BaseTotemCard
 import org.joda.time.DateTime
 
 const val TAG = "regador"
@@ -40,68 +41,71 @@ fun WaterPumpListItem(
     onDeleteButtonClicked: (totem: Totem) -> Unit
 ) {
     val colorActive = MaterialTheme.colors.primaryVariant
-    Column(
-        modifier = modifier
-            .padding(8.dp)
-            .background(color = MaterialTheme.colors.surface, shape = MaterialTheme.shapes.small),
-        horizontalAlignment = Alignment.Start
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = modifier
-                .padding(8.dp)
+    BaseTotemCard {
+        Column(
+            horizontalAlignment = Alignment.Start
         ) {
-            Text(
-                text = regador.topic,
-                style = MaterialTheme.typography.h6,
-                color = if (regador.isActive) colorActive else MaterialTheme.colors.onSurface,
-                overflow = TextOverflow.Ellipsis,
-            )
             Row(
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                verticalAlignment = Alignment.CenterVertically
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = modifier
+                    .padding(8.dp)
             ) {
-                Image(
-                    modifier = modifier
-                        .clickable {
-                            onDeleteButtonClicked.invoke(regador)
-                        },
-                    imageVector = Icons.Default.Refresh,
-                    contentDescription = null,
+                Text(
+                    text = regador.topic,
+                    style = MaterialTheme.typography.h6,
+                    color = if (regador.isActive) colorActive else MaterialTheme.colors.onSurface,
+                    overflow = TextOverflow.Ellipsis,
                 )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        modifier = modifier
+                            .clickable {
+                                onDeleteButtonClicked.invoke(regador)
+                            },
+                        imageVector = Icons.Default.Refresh,
+                        contentDescription = null,
+                    )
 
-                Image(
-                    modifier = modifier
-                        .clickable {
-                            onDeleteButtonClicked.invoke(regador)
-                        },
-                    painter = painterResource(id = R.drawable.ic_delete),
-                    contentDescription = null
+                    Image(
+                        modifier = modifier
+                            .clickable {
+                                onDeleteButtonClicked.invoke(regador)
+                            },
+                        painter = painterResource(id = R.drawable.ic_delete),
+                        contentDescription = null
+                    )
+                }
+            }
+            Text(
+                text = checkIsActivated(regador),
+                style = MaterialTheme.typography.subtitle1,
+                color = MaterialTheme.colors.onSurface,
+                modifier = modifier.padding(horizontal = 8.dp)
+            )
+            Button(
+                onClick = {
+                    onButtonClicked(regador)
+                },
+                modifier = modifier
+                    .padding(8.dp)
+                    .height(50.dp)
+                    .background(
+                        color = MaterialTheme.colors.primary,
+                        shape = MaterialTheme.shapes.small
+                    )
+            ) {
+                Text(
+                    text = stringResource(R.string.pump_water),
+                    color = MaterialTheme.colors.onPrimary
                 )
             }
         }
-        Text(
-            text = checkIsActivated(regador),
-            style = MaterialTheme.typography.subtitle1,
-            color = MaterialTheme.colors.onSurface,
-            modifier = modifier.padding(horizontal = 8.dp)
-        )
-        Button(
-            onClick = {
-                onButtonClicked(regador)
-            },
-            modifier = modifier
-                .padding(8.dp)
-                .height(50.dp)
-                .background(
-                    color = MaterialTheme.colors.primary,
-                    shape = MaterialTheme.shapes.small
-                )
-        ) {
-            Text(text = stringResource(R.string.pump_water))
-        }
     }
+
 }
 
 @Composable
