@@ -2,11 +2,10 @@ package com.example.hercules.domain.model
 
 import com.example.hercules.data.model.DBTotem
 
-
 class Regador(
     override val id: Int,
     override val topic: String,
-    override val powerState: PowerState,
+    override val powerState: Boolean,
     override val name: String,
     override val createdAt: Long,
     override val isActive: Boolean,
@@ -32,7 +31,7 @@ class Regador(
                 name = totem.name,
                 type = totem.totemType,
                 isActive = false,
-                powerState = PowerState.OFF
+                powerState = false
             )
     }
 }

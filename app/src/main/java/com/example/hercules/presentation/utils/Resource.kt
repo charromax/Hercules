@@ -12,5 +12,5 @@ sealed class Resource<out R> {
     data class Error(val exception: MqttException, val message: String?) : Resource<Nothing>()
     data class UnknownError(val exception: Throwable, val message: String?) : Resource<Nothing>()
     data class ConnectionLost(val exception: Throwable?) : Resource<Nothing>()
-    data class MessageReceived<out T>(val data: T, val topic: String) : Resource<T>()
+    data class MessageReceived<out T>(val data: T) : Resource<T>()
 }

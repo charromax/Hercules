@@ -4,6 +4,7 @@
 
 package com.example.hercules.data.repository
 
+import com.example.hercules.data.remote.response.TotemResponse
 import com.example.hercules.presentation.utils.Resource
 import kotlinx.coroutines.flow.Flow
 
@@ -18,7 +19,7 @@ interface MqttRepository {
 
     fun unSubscribeFromTopic(topic: String): Flow<Resource<Nothing>>
 
-    fun retrieveMessageFromPublisher(): Flow<Resource<String>>
+    fun retrieveMessageFromPublisher(): Flow<Resource<TotemResponse>>
 
     fun publishMessage(topic: String, message: String): Flow<Resource<Nothing>>
 }

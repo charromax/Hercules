@@ -6,6 +6,7 @@ package com.example.hercules.presentation.ui.mqtt
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.hercules.data.remote.response.TotemResponse
 import com.example.hercules.domain.model.Message
 import com.example.hercules.domain.use_case.mqtt.MqttUseCase
 import com.example.hercules.presentation.utils.Resource
@@ -156,12 +157,9 @@ class MqttViewModel @Inject constructor(
         )
     }
 
-    private fun onMessageReceived(messageReceived: Resource.MessageReceived<String>) {
+    private fun onMessageReceived(messageReceived: Resource.MessageReceived<TotemResponse>) {
         _mqttState.value = mqttState.value.copy(
-            lastMessageReceived = Message(
-                topic = messageReceived.topic,
-                message = messageReceived.data
-            )
+
         )
     }
 

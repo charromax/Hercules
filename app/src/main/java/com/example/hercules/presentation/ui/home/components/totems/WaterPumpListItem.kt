@@ -23,7 +23,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.hercules.R
-import com.example.hercules.domain.model.PowerState
 import com.example.hercules.domain.model.Regador
 import com.example.hercules.domain.model.Totem
 import com.example.hercules.domain.model.TotemType
@@ -124,7 +123,7 @@ fun SensorItemPreview() {
         createdAt = DateTime.now().millis,
         name = "sensor oficina",
         type = TotemType.MAG_SENSOR,
-        powerState = PowerState.ON
+        powerState = true
     )
 
     WaterPumpListItem(regador = regador, onButtonClicked = {
