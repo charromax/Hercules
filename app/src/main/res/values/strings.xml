@@ -1,3 +1,27 @@
+<!--
+  ~ Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
+  -->
+
 <resources>
     <string name="app_name">Hercules</string>
+    <string name="rejected_connection">Conexión al broker rechazada</string>
+    <string name="connection_success">Cuidado, Hercules vigila</string>
+    <string name="empty_topics_list">Lista de topics vacía</string>
+    <string name="sensor_activated">Totem Activado</string>
+    <string name="sensor_deactivated">Totem Desactivado</string>
+    <string name="sensors_in_your_network">Totems en tu red</string>
+    <string name="new_sensor">Nuevo Sensor</string>
+    <string name="sort_sensors">Ordenar sensores</string>
+    <string name="topic">Topic</string>
+    <string name="date">Fecha</string>
+    <string name="state">Estado</string>
+    <string name="sensor_deleted">Sensor eliminado</string>
+    <string name="water_pump_deleted">Regador eliminado</string>
+    <string name="undo">Deshacer</string>
+    <string name="pump_water">REGAR</string>
+    <string name="subscription_error">Hubo errores conectando algunos Totems, por favor revisa las conexiones e intenta de nuevo</string>
+    <string name="system_online">Sistema Online</string>
+    <string name="save">Guardar</string>
+    <string name="back">Back</string>
+    <string name="new_totem">Nuevo Totem</string>
 </resources>
