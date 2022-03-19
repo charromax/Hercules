@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.hercules.R
+import com.example.hercules.data.remote.response.TotemResponse
 import com.example.hercules.domain.model.Message
 import com.example.hercules.domain.model.Sensor
 import com.example.hercules.domain.model.Totem
@@ -33,7 +34,7 @@ fun MagneticSensor(
     modifier: Modifier = Modifier,
     onButtonClicked: (totem: Totem) -> Unit,
     onDeleteButtonClicked: (totem: Totem) -> Unit,
-    lastMessageReceived: Message?
+    lastMessageReceived: TotemResponse?
 ) {
     val colorActive = MaterialTheme.colors.primaryVariant
     BaseTotemCard {
@@ -96,7 +97,8 @@ fun MagneticSensor(
 @Composable
 fun getAlarmText(sensor: Sensor, lastMessageReceived: Message?): String {
     return when {
-        (lastMessageReceived != null && sensor.topic == lastMessageReceived.topic) -> lastMessageReceived.message
+        lastMessageReceived != null
+                && sensor.topic == lastMessageReceived.topic -> lastMessageReceived.message
         else -> ""
     }
 }
