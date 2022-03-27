@@ -1,6 +1,12 @@
+/*
+ * Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
+ */
+
 package com.example.hercules.domain.model
 
 import com.example.hercules.data.model.DBTotem
+import com.example.hercules.data.remote.response.MqttManualParser
+import com.example.hercules.data.remote.response.WaterPumpPayload
 
 class Regador(
     override val id: Int,
@@ -9,7 +15,8 @@ class Regador(
     override val name: String,
     override val createdAt: Long,
     override val isActive: Boolean,
-    override val type: TotemType
+    override val type: TotemType,
+    override val currentState: WaterPumpPayload?,
 ) : Totem() {
 
     override fun toDBObject(): DBTotem {
@@ -30,8 +37,12 @@ class Regador(
                 topic = totem.topic,
                 name = totem.name,
                 type = totem.totemType,
-                isActive = false,
-                powerState = false
+                isActive = totem.isActive,
+                powerState = totem.isPowerOn,
+                currentState = MqttManualParser.buildPayload(
+                    totem.rawJsonPayload,
+                    totem.totemType
+                ) as? WaterPumpPayload
             )
     }
 }

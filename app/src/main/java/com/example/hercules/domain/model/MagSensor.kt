@@ -5,39 +5,44 @@
 package com.example.hercules.domain.model
 
 import com.example.hercules.data.model.DBTotem
+import com.example.hercules.data.remote.response.MagSensorPayload
+import com.example.hercules.data.remote.response.MqttManualParser
 
 
-class Sensor(
-    val isTriggered: Boolean,
+class MagSensor(
+    val data: Boolean,
     override val id: Int,
     override val topic: String,
     override val powerState: Boolean,
     override val name: String,
     override val createdAt: Long,
     override val isActive: Boolean = false,
-    override val type: TotemType
+    override val type: TotemType,
+    override val currentState: MagSensorPayload?
 ) : Totem() {
 
     override fun toDBObject(): DBTotem {
         return DBTotem(
-            id = id,
-            createdAt = createdAt,
-            topic = topic,
-            name = name,
-            totemType = type
+            topic = this.topic,
+            name = this.name,
+            totemType = this.type,
         )
     }
 
     companion object {
         fun build(totem: DBTotem) =
-            Sensor(
+            MagSensor(
                 id = totem.id,
                 createdAt = totem.createdAt,
                 topic = totem.topic,
-                isTriggered = false,
+                data = false,
                 powerState = false,
                 name = totem.name,
-                type = totem.totemType
+                type = totem.totemType,
+                currentState = MqttManualParser.buildPayload(
+                    totem.rawJsonPayload,
+                    totem.totemType
+                ) as? MagSensorPayload
             )
     }
 }

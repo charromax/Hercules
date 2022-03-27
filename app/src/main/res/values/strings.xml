@@ -24,4 +24,8 @@
     <string name="save">Guardar</string>
     <string name="back">Back</string>
     <string name="new_totem">Nuevo Totem</string>
+    <string name="alarm">ALARMA</string>
+    <string name="ok">OK</string>
+    <string name="totem_shut_down">Totam Apagado</string>
+    <string name="watering_in_progress">Regando...</string>
 </resources>

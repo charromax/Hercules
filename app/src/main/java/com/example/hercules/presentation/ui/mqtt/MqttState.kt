@@ -4,7 +4,9 @@
 
 package com.example.hercules.presentation.ui.mqtt
 
+import com.example.hercules.data.remote.response.MagSensorPayload
 import com.example.hercules.data.remote.response.TotemResponse
+import com.example.hercules.data.remote.response.WaterPumpPayload
 import com.example.hercules.domain.model.Message
 
 data class MqttState(
@@ -16,3 +18,23 @@ data class MqttState(
     val error: String? = null,
     val subscriptionMap: Map<String, Boolean>? = null
 )
+
+abstract class BaseTotemState {
+    abstract val isPowerOn: Boolean
+    abstract val isActive: Boolean
+    abstract val topic: String
+}
+
+data class WaterPumpState(
+    val payload: WaterPumpPayload? = null,
+    override val isPowerOn: Boolean = false,
+    override val isActive: Boolean = false,
+    override val topic: String = ""
+) : BaseTotemState()
+
+data class MagSensorState(
+    val payload: MagSensorPayload? = null,
+    override val isPowerOn: Boolean = false,
+    override val isActive: Boolean = false,
+    override val topic: String = ""
+) : BaseTotemState()

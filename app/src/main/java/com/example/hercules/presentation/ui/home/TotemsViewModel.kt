@@ -52,7 +52,18 @@ class TotemsViewModel @Inject constructor(
             HomeEvents.OnUndoDelete -> restoreDeletedSensor()
             is HomeEvents.OnAddTotem -> addTotem(event.totem)
             HomeEvents.OnToggleSectionOrder -> toggleOrderSectionVisibility()
+            HomeEvents.OnTotemSavedSuccesfully -> clearTotemState()
         }
+    }
+
+    private fun clearTotemState() {
+        _addTotemScreenState.value = addTotemScreenState.value.copy(
+            isSaveSuccessful = false,
+            snack = null,
+            error = null,
+            newTotemName = null,
+            newTotemTopic = null
+        )
     }
 
     /**

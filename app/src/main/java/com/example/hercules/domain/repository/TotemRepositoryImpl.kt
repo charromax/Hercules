@@ -12,10 +12,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class SensorRepositoryImpl @Inject constructor(private val dao: TotemDao) : TotemRepository {
+class TotemRepositoryImpl @Inject constructor(private val dao: TotemDao) : TotemRepository {
     override fun getAllTotems(): Flow<List<Totem>> {
         return dao.getAllTotems().map { list ->
-            list.map { it.toTotem() }
+            list.map {
+                it.toTotem()
+            }
         }
     }
 
@@ -23,8 +25,16 @@ class SensorRepositoryImpl @Inject constructor(private val dao: TotemDao) : Tote
         return dao.getTotemByID(id)?.toTotem()
     }
 
+    override suspend fun getTotemByTopic(topic: String): DBTotem? {
+        return dao.getTotemByTopic(topic)
+    }
+
     override suspend fun addNewTotem(totem: DBTotem) {
         dao.addNewTotem(totem)
+    }
+
+    override suspend fun updateTotem(totem: DBTotem) {
+        dao.updateTotem(totem)
     }
 
     override suspend fun deleteSensor(totem: DBTotem) {

@@ -14,7 +14,7 @@ import com.example.hercules.data.remote.mqtt.MQTTClient
 import com.example.hercules.data.repository.MqttRepository
 import com.example.hercules.data.repository.TotemRepository
 import com.example.hercules.domain.repository.MqttRepositoryImpl
-import com.example.hercules.domain.repository.SensorRepositoryImpl
+import com.example.hercules.domain.repository.TotemRepositoryImpl
 import com.example.hercules.domain.use_case.sensors.*
 import dagger.Module
 import dagger.Provides
@@ -60,7 +60,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideSensorRepository(dao: TotemDao): TotemRepository {
-        return SensorRepositoryImpl(dao)
+        return TotemRepositoryImpl(dao)
     }
 
     @Provides
@@ -70,7 +70,9 @@ object AppModule {
             getAllSensorsUseCase = GetAllSensorsUseCase(repository),
             deleteSensorUseCase = DeleteSensorUseCase(repository),
             saveNewSensor = AddSensorUseCase(repository),
-            getTotemByIdUseCase = GetTotemByIdUseCase(repository)
+            getTotemByIdUseCase = GetTotemByIdUseCase(repository),
+            updateTotemUseCase = UpdateTotemUseCase(repository),
+            getTotemByTopicUseCase = GetTotemByTopicUseCase(repository)
         )
     }
 

@@ -99,6 +99,7 @@ fun HomeScreen(
                 items(homeState.value.totems) { item: Totem ->
                     val deleteMsg: String
                     val undoLabel = stringResource(R.string.undo)
+
                     when (item.type) {
                         TotemType.WATER_PUMP -> {
                             deleteMsg = stringResource(id = R.string.water_pump_deleted)
@@ -106,7 +107,6 @@ fun HomeScreen(
                                 modifier = Modifier.fillMaxWidth(),
                                 regador = item as Regador,
                                 onButtonClicked = {
-                                    Log.i(TAG, "HomeScreen: ALARM BUTTON CLICKED")
                                     sendWaterPumpPowerPayload(mqttViewModel, item)
                                 },
                                 onDeleteButtonClicked = {
@@ -121,14 +121,14 @@ fun HomeScreen(
                                 },
                                 onRefreshButtonClicked = {
                                     //TODO: send refresh totem payload
-                                })
+                                }
+                            )
                         }
                         TotemType.MAG_SENSOR -> {
                             deleteMsg = stringResource(id = R.string.sensor_deleted)
                             MagneticSensor(
                                 modifier = Modifier.fillMaxWidth(),
-                                sensor = item as Sensor,
-                                lastMessageReceived = mqttState.value.lastMessageReceived,
+                                magSensor = item as MagSensor,
                                 onButtonClicked = {
                                     Log.i(TAG, "HomeScreen: ALARM BUTTON CLICKED")
                                     //TODO: send reset alarm payload
@@ -151,6 +151,7 @@ fun HomeScreen(
         }
     }
 }
+
 
 fun checkSubscriptionErrors(
     context: Context,

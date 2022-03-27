@@ -15,12 +15,14 @@ data class AmbientSensorPayload(
         fun buildPayload(
             json: JsonReader
         ): BaseTotemPayload? {
+            json.beginObject()
             val payload = AmbientSensorPayload()
             when (json.selectName(JsonReader.Options.of("temp", "hum"))) {
                 0 -> payload.temperature = json.nextDouble()
                 1 -> payload.humidity = json.nextDouble()
                 else -> throw JsonDataException("Invalid data")
             }
+            json.endObject()
             return if (payload.humidity != null && payload.temperature != null) payload else null
         }
     }

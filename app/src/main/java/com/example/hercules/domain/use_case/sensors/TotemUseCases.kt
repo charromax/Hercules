@@ -8,5 +8,7 @@ data class TotemUseCases(
     val getAllSensorsUseCase: GetAllSensorsUseCase,
     val deleteSensorUseCase: DeleteSensorUseCase,
     val saveNewSensor: AddSensorUseCase,
-    val getTotemByIdUseCase: GetTotemByIdUseCase
+    val updateTotemUseCase: UpdateTotemUseCase,
+    val getTotemByIdUseCase: GetTotemByIdUseCase,
+    val getTotemByTopicUseCase: GetTotemByTopicUseCase
 )

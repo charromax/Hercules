@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022. charr0max -> manuelrg88@gmail.com
+ */
+
 package com.example.hercules.presentation.ui.home
 
 
@@ -10,5 +14,6 @@ sealed class HomeEvents {
     data class OnOrderChange(val sensorOrder: SensorOrder): HomeEvents()
     data class OnDeleteTotem(val totem: Totem): HomeEvents()
     data class OnAddTotem(val totem: DBTotem): HomeEvents()
-    object OnUndoDelete: HomeEvents()
+    object OnUndoDelete : HomeEvents()
+    object OnTotemSavedSuccesfully : HomeEvents()
 }

@@ -20,9 +20,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.hercules.R
-import com.example.hercules.data.remote.response.TotemResponse
-import com.example.hercules.domain.model.Message
-import com.example.hercules.domain.model.Sensor
+import com.example.hercules.data.remote.response.MagSensorPayload
+import com.example.hercules.domain.model.MagSensor
 import com.example.hercules.domain.model.Totem
 import com.example.hercules.presentation.ui.components.BaseTotemCard
 
@@ -30,13 +29,13 @@ const val TAG = "magnetic_sensor"
 
 @Composable
 fun MagneticSensor(
-    sensor: Sensor,
+    magSensor: MagSensor,
     modifier: Modifier = Modifier,
     onButtonClicked: (totem: Totem) -> Unit,
-    onDeleteButtonClicked: (totem: Totem) -> Unit,
-    lastMessageReceived: TotemResponse?
+    onDeleteButtonClicked: (totem: Totem) -> Unit
 ) {
     val colorActive = MaterialTheme.colors.primaryVariant
+
     BaseTotemCard {
         Column(
             horizontalAlignment = Alignment.Start
@@ -49,16 +48,16 @@ fun MagneticSensor(
                     .padding(8.dp)
             ) {
                 Text(
-                    text = sensor.topic,
+                    text = magSensor.topic,
                     style = MaterialTheme.typography.h6,
-                    color = if (sensor.isActive) colorActive else MaterialTheme.colors.onSurface,
+                    color = if (magSensor.isActive) colorActive else MaterialTheme.colors.onSurface,
                     overflow = TextOverflow.Ellipsis
                 )
 
                 Image(
                     modifier = modifier
                         .clickable {
-                            onDeleteButtonClicked.invoke(sensor)
+                            onDeleteButtonClicked.invoke(magSensor)
                         },
                     painter = painterResource(id = R.drawable.ic_delete),
                     contentDescription = null
@@ -66,26 +65,29 @@ fun MagneticSensor(
 
             }
             Text(
-                text = checkIsActivated(sensor),
+                text = checkIsActivated(magSensor.isActive),
                 style = MaterialTheme.typography.subtitle1,
                 color = MaterialTheme.colors.onSurface,
                 modifier = modifier.padding(horizontal = 8.dp)
             )
             Button(
                 onClick = {
-                    onButtonClicked(sensor)
+                    onButtonClicked(magSensor)
                 },
                 modifier = modifier
                     .padding(8.dp)
                     .fillMaxWidth()
                     .height(50.dp)
                     .background(
-                        color = getSensorButtonColor(sensor),
+                        color = getSensorButtonColor(
+                            magSensor.isActive,
+                            magSensor.powerState, magSensor.currentState?.data
+                        ),
                         shape = MaterialTheme.shapes.small
                     )
             ) {
                 Text(
-                    text = getAlarmText(sensor, lastMessageReceived),
+                    text = checkSensorPayload(magSensor.currentState),
                     color = MaterialTheme.colors.onPrimary
                 )
             }
@@ -95,25 +97,26 @@ fun MagneticSensor(
 }
 
 @Composable
-fun getAlarmText(sensor: Sensor, lastMessageReceived: Message?): String {
-    return when {
-        lastMessageReceived != null
-                && sensor.topic == lastMessageReceived.topic -> lastMessageReceived.message
-        else -> ""
-    }
+fun checkSensorPayload(magSensorPayload: MagSensorPayload?): String {
+    return if (magSensorPayload?.data == true) stringResource(R.string.alarm) else stringResource(R.string.ok)
 }
 
 @Composable
-private fun getSensorButtonColor(sensor: Sensor): Color {
+private fun getSensorButtonColor(
+    activation: Boolean,
+    power: Boolean,
+    isTriggered: Boolean?
+): Color {
     return when {
-        sensor.isActive && sensor.isTriggered -> MaterialTheme.colors.error
-        sensor.isActive && !sensor.isTriggered -> Color.Green
+        activation && power && isTriggered == true -> MaterialTheme.colors.error
+        activation && isTriggered == false -> Color.Green
+        !activation || !power -> Color.Gray
         else -> MaterialTheme.colors.primary
     }
 }
 
 @Composable
-private fun checkIsActivated(sensor: Sensor) =
-    if (sensor.isActive) stringResource(R.string.sensor_activated) else stringResource(
+private fun checkIsActivated(activation: Boolean) =
+    if (activation) stringResource(R.string.sensor_activated) else stringResource(
         R.string.sensor_deactivated
     )

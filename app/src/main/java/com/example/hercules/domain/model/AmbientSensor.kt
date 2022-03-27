@@ -5,6 +5,9 @@
 package com.example.hercules.domain.model
 
 import com.example.hercules.data.model.DBTotem
+import com.example.hercules.data.remote.response.AmbientSensorPayload
+import com.example.hercules.data.remote.response.BaseTotemPayload
+import com.example.hercules.data.remote.response.MqttManualParser
 
 data class AmbientSensor(
     override val id: Int,
@@ -13,7 +16,8 @@ data class AmbientSensor(
     override val name: String,
     override val createdAt: Long,
     override val isActive: Boolean,
-    override val type: TotemType
+    override val type: TotemType,
+    override val currentState: BaseTotemPayload?
 ): Totem() {
     override fun toDBObject(): DBTotem {
         return DBTotem(
@@ -33,7 +37,11 @@ data class AmbientSensor(
                 name = totem.name,
                 type = totem.totemType,
                 isActive = false,
-                powerState = false
+                powerState = false,
+                currentState = MqttManualParser.buildPayload(
+                    totem.rawJsonPayload,
+                    totem.totemType
+                ) as? AmbientSensorPayload
             )
     }
 }

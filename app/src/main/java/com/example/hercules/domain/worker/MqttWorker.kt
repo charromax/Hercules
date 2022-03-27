@@ -30,7 +30,7 @@ class MqttWorker @AssistedInject constructor(
         val totemId = inputData.getInt(TOTEM_ID, -1)
         val instruction = inputData.getString(INSTRUCTION)
 
-        // if there's such a totem and instruction is one of the set then proceed
+        // if there'TYPE such a totem and instruction is one of the set then proceed
         if (validateArguments(totemId, instruction)) {
             totemUseCases.getTotemByIdUseCase(totemId)?.let {
                 mqttUseCase.connectToMQTT().collect { response ->

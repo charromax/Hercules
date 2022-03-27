@@ -10,8 +10,6 @@ import com.example.hercules.data.remote.response.MqttManualParser
 import com.example.hercules.data.remote.response.TotemResponse
 import com.example.hercules.data.repository.MqttRepository
 import com.example.hercules.presentation.utils.Resource
-import com.squareup.moshi.JsonReader
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -19,9 +17,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import okio.Buffer
-import okio.BufferedSource
-import java.io.BufferedInputStream
 import javax.inject.Inject
 
 
@@ -144,8 +139,8 @@ class MqttRepositoryImpl @Inject constructor(
                 is MqttResponse.ConnectionLost -> emit(Resource.ConnectionLost(response.exception))
                 is MqttResponse.MessageReceived -> emit(
                     Resource.MessageReceived(
-                        MqttManualParser().parse(
-                            JsonReader.of(Buffer().writeUtf8(response.data)),
+                        MqttManualParser.parse(
+                            response.data,
                             response.topic
                         )
                     )

@@ -4,7 +4,6 @@
 
 package com.example.hercules.presentation.ui.home.components
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,14 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.hercules.R
 import com.example.hercules.domain.model.Regador
 import com.example.hercules.domain.model.Totem
-import com.example.hercules.domain.model.TotemType
 import com.example.hercules.presentation.ui.components.BaseTotemCard
-import org.joda.time.DateTime
 
 const val TAG = "regador"
 
@@ -40,6 +36,7 @@ fun WaterPumpListItem(
     onDeleteButtonClicked: (totem: Totem) -> Unit
 ) {
     val colorActive = MaterialTheme.colors.primaryVariant
+
     BaseTotemCard {
         Column(
             horizontalAlignment = Alignment.Start
@@ -53,7 +50,8 @@ fun WaterPumpListItem(
                 Text(
                     text = regador.topic,
                     style = MaterialTheme.typography.h6,
-                    color = if (regador.isActive) colorActive else MaterialTheme.colors.onSurface,
+                    color = if (regador.isActive) colorActive
+                    else MaterialTheme.colors.onSurface,
                     overflow = TextOverflow.Ellipsis,
                 )
                 Row(
@@ -98,41 +96,28 @@ fun WaterPumpListItem(
                     )
             ) {
                 Text(
-                    text = stringResource(R.string.pump_water),
+                    text = getButtonText(regador),
                     color = MaterialTheme.colors.onPrimary
                 )
             }
         }
     }
-
 }
 
 @Composable
-private fun checkIsActivated(regador: Regador) =
-    if (regador.isActive) stringResource(R.string.sensor_activated) else stringResource(
-        R.string.sensor_deactivated
-    )
-
-@Preview
-@Composable
-fun SensorItemPreview() {
-    val regador = Regador(
-        topic = "home/terrace/pump",
-        isActive = true,
-        id = 0,
-        createdAt = DateTime.now().millis,
-        name = "sensor oficina",
-        type = TotemType.MAG_SENSOR,
-        powerState = true
-    )
-
-    WaterPumpListItem(regador = regador, onButtonClicked = {
-        Log.i(TAG, "SensorItemPreview $regador")
-    },
-        onDeleteButtonClicked = {
-            Log.i(TAG, "SensorItemPreview: onDelete")
-        },
-        onRefreshButtonClicked = {
-            Log.i(TAG, "SensorItemPreview: on Refresh")
-        })
+private fun getButtonText(regador: Regador): String {
+    return if (regador.currentState?.isWorking == true) stringResource(R.string.watering_in_progress)
+    else stringResource(R.string.pump_water)
 }
+
+@Composable
+private fun checkIsActivated(regador: Regador): String {
+    return when {
+        regador.powerState && regador.isActive -> stringResource(R.string.sensor_activated)
+        !regador.powerState -> stringResource(R.string.totem_shut_down)
+        else -> stringResource(
+            R.string.sensor_deactivated
+        )
+    }
+}
+

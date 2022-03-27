@@ -11,6 +11,8 @@ import kotlinx.coroutines.flow.Flow
 interface TotemRepository {
     fun getAllTotems(): Flow<List<Totem>>
     suspend fun getTotemByID(id: Int): Totem?
+    suspend fun getTotemByTopic(topic: String): DBTotem?
     suspend fun addNewTotem(totem: DBTotem)
+    suspend fun updateTotem(totem: DBTotem)
     suspend fun deleteSensor(totem: DBTotem)
 }

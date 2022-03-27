@@ -9,8 +9,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.hercules.data.remote.response.TotemResponse
 import com.example.hercules.domain.model.Message
 import com.example.hercules.domain.use_case.mqtt.MqttUseCase
+import com.example.hercules.domain.use_case.sensors.TotemUseCases
 import com.example.hercules.presentation.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,11 +24,16 @@ import javax.inject.Inject
 private const val UNDEFINED = "Undefined State"
 @HiltViewModel
 class MqttViewModel @Inject constructor(
-    private val mqttUseCase: MqttUseCase
+    private val mqttUseCase: MqttUseCase,
+    private val database: TotemUseCases
 ) : ViewModel() {
     private var connectionMqttJob: Job? = null
     private val _mqttState = MutableStateFlow(MqttState())
     val mqttState: StateFlow<MqttState> = _mqttState
+    private val _waterPumpState = MutableStateFlow(WaterPumpState())
+    val waterPumpState: StateFlow<WaterPumpState> = _waterPumpState
+    private val _magSensorState = MutableStateFlow(MagSensorState())
+    val magSensorState: StateFlow<MagSensorState> = _magSensorState
     val topicList = mutableListOf<String>()
     private val subscriptionsMap = mutableMapOf<String, Boolean>()
 
@@ -158,8 +165,21 @@ class MqttViewModel @Inject constructor(
     }
 
     private fun onMessageReceived(messageReceived: Resource.MessageReceived<TotemResponse>) {
-        _mqttState.value = mqttState.value.copy(
+        viewModelScope.launch(Dispatchers.IO) {
+            val totem = database.getTotemByTopicUseCase(messageReceived.data.topic)
+            if (totem != null) {
+                val updatedTotem = totem.copy(
+                    isActive = messageReceived.data.isActive,
+                    isPowerOn = messageReceived.data.isPowerOn,
+                    rawJsonPayload = messageReceived.data.payload.toString()
+                )
+                database.updateTotemUseCase(updatedTotem)
+            }
+        }
 
+
+        _mqttState.value = mqttState.value.copy(
+            lastMessageReceived = messageReceived.data
         )
     }
 

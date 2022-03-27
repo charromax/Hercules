@@ -6,7 +6,7 @@ package com.example.hercules.domain.use_case.sensors
 
 
 import com.example.hercules.data.repository.TotemRepository
-import com.example.hercules.domain.model.Sensor
+import com.example.hercules.domain.model.MagSensor
 import com.example.hercules.domain.model.Totem
 import com.example.hercules.presentation.utils.Order
 import com.example.hercules.presentation.utils.SensorOrder
@@ -27,7 +27,7 @@ class GetAllSensorsUseCase @Inject constructor(
                         is SensorOrder.Topic -> sensors.sortedBy { it.topic }
                         is SensorOrder.State -> sensors.sortedBy {
                             when (it) {
-                                is Sensor -> it.isTriggered
+                                is MagSensor -> it.data
                                 else -> it.isActive
                             }
                         }
@@ -39,7 +39,7 @@ class GetAllSensorsUseCase @Inject constructor(
                         is SensorOrder.Topic -> sensors.sortedByDescending { it.topic }
                         is SensorOrder.State -> sensors.sortedByDescending {
                             when (it) {
-                                is Sensor -> it.isTriggered
+                                is MagSensor -> it.data
                                 else -> it.isActive
                             }
                         }

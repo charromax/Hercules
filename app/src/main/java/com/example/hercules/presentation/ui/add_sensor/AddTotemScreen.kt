@@ -21,6 +21,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.hercules.R
 import com.example.hercules.presentation.ui.add_sensor.components.TotemTypeDropDownButton
 import com.example.hercules.presentation.ui.components.TopBarStandard
+import com.example.hercules.presentation.ui.home.HomeEvents
 import com.example.hercules.presentation.ui.home.TotemsViewModel
 import com.example.hercules.presentation.ui.mqtt.MqttEvents
 import com.example.hercules.presentation.ui.mqtt.MqttViewModel
@@ -35,6 +36,7 @@ fun AddTotemScreen(
     val state = totemsViewModel.addTotemScreenState.collectAsState()
     if (state.value.isSaveSuccessful) {
         mqttViewModel.onEvent(MqttEvents.RefreshSubscription)
+        totemsViewModel.onEvent(HomeEvents.OnTotemSavedSuccesfully)
         navController.navigateUp()
     }
     val scaffoldState = rememberScaffoldState()
@@ -96,13 +98,15 @@ fun AddTotemScreen(
                     value = state.value.newTotemName ?: "",
                     onValueChange = {
                         totemsViewModel.updateTotemName(it)
-                    })
+                    },
+                    label = { Text(text = "Nombre") })
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = state.value.newTotemTopic ?: "",
                     onValueChange = {
                         totemsViewModel.updateTotemTopic(it.trim().lowercase())
-                    })
+                    },
+                    label = { Text(text = "Topic") })
                 TotemTypeDropDownButton(
                     onClick = { totemsViewModel.onEvent(AddTotemScreenEvents.OnDropDownOpen) },
                     selectedTotemType = state.value.selectedTotemType,
