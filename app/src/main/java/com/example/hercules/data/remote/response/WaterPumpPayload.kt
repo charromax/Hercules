@@ -19,7 +19,7 @@ data class WaterPumpPayload(
         val CYCLE = "cycle"
         fun buildPayload(
             json: JsonReader
-        ): BaseTotemPayload? {
+        ): BaseTotemPayload {
             json.beginObject()
             val payload = WaterPumpPayload()
             if (json.selectName(JsonReader.Options.of(IS_WORKING)) > -1) payload.isWorking =

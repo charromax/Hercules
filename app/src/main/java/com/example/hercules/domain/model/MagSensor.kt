@@ -36,7 +36,8 @@ class MagSensor(
                 createdAt = totem.createdAt,
                 topic = totem.topic,
                 data = false,
-                powerState = false,
+                powerState = totem.isPowerOn,
+                isActive = totem.isActive,
                 name = totem.name,
                 type = totem.totemType,
                 currentState = MqttManualParser.buildPayload(
