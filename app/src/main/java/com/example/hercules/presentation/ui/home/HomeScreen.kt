@@ -8,6 +8,7 @@ import android.content.Context
 import android.util.Log
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -81,8 +82,10 @@ fun HomeScreen(
         scaffoldState = scaffoldState
     )
     {
-        Box(modifier = Modifier
-            .fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
             Column() {
                 HomeHeader(
                     isOrderSectionVisible = homeState.value.isOrderSectionVisible,
@@ -98,54 +101,56 @@ fun HomeScreen(
                 )
 
                 LazyVerticalGrid(
-                cells = GridCells.Fixed(2),
-                contentPadding = PaddingValues(start = 7.5.dp, end = 7.5.dp, bottom = 100.dp),
-                modifier = Modifier.fillMaxSize()) {
+                    cells = GridCells.Fixed(2),
+                    contentPadding = PaddingValues(start = 7.5.dp, end = 7.5.dp, bottom = 100.dp),
+                    modifier = Modifier.fillMaxSize()
+                ) {
                     items(homeState.value.totems) { item: Totem ->
                         val deleteMsg: String
                         val undoLabel = stringResource(R.string.undo)
 
-                    when (item.type) {
-                        TotemType.WATER_PUMP -> {
-                            deleteMsg = stringResource(id = R.string.water_pump_deleted)
-                            WaterPumpListItem(
-                                regador = item as Regador,
-                                onButtonClicked = {
-                                    sendWaterPumpPowerPayload(mqttViewModel, item)
-                                },
-                                onDeleteButtonClicked = {
-                                    deleteTotem(
-                                        totemsViewModel,
-                                        it,
-                                        scope,
-                                        scaffoldState,
-                                        deleteMsg,
-                                        undoLabel
-                                    )
-                                },
-                                onRefreshButtonClicked = {
-                                    //TODO: send refresh totem payload
-                                }
-                            )
-                        }
-                        TotemType.MAG_SENSOR -> {
-                            deleteMsg = stringResource(id = R.string.sensor_deleted)
-                            MagneticSensor(
-                                magSensor = item as MagSensor,
-                                onButtonClicked = {
-                                    Log.i(TAG, "HomeScreen: ALARM BUTTON CLICKED")
-                                    //TODO: send reset alarm payload
-                                },
-                                onDeleteButtonClicked = {
-                                    deleteTotem(
-                                        totemsViewModel,
-                                        it,
-                                        scope,
-                                        scaffoldState,
-                                        deleteMsg,
-                                        undoLabel
-                                    )
-                                })
+                        when (item.type) {
+                            TotemType.WATER_PUMP -> {
+                                deleteMsg = stringResource(id = R.string.water_pump_deleted)
+                                WaterPumpListItem(
+                                    regador = item as Regador,
+                                    onButtonClicked = {
+                                        sendWaterPumpPowerPayload(mqttViewModel, item)
+                                    },
+                                    onDeleteButtonClicked = {
+                                        deleteTotem(
+                                            totemsViewModel,
+                                            it,
+                                            scope,
+                                            scaffoldState,
+                                            deleteMsg,
+                                            undoLabel
+                                        )
+                                    },
+                                    onRefreshButtonClicked = {
+                                        //TODO: send refresh totem payload
+                                    }
+                                )
+                            }
+                            TotemType.MAG_SENSOR -> {
+                                deleteMsg = stringResource(id = R.string.sensor_deleted)
+                                MagneticSensor(
+                                    magSensor = item as MagSensor,
+                                    onButtonClicked = {
+                                        Log.i(TAG, "HomeScreen: ALARM BUTTON CLICKED")
+                                        //TODO: send reset alarm payload
+                                    },
+                                    onDeleteButtonClicked = {
+                                        deleteTotem(
+                                            totemsViewModel,
+                                            it,
+                                            scope,
+                                            scaffoldState,
+                                            deleteMsg,
+                                            undoLabel
+                                        )
+                                    })
+                            }
                         }
                     }
                 }
@@ -182,7 +187,7 @@ fun checkSubscriptionErrors(
     }
 }
 
-private fun addTopicList(
+fun addTopicList(
     mqttState: State<MqttState>,
     totemState: State<HomeState>,
     mqttViewModel: MqttViewModel
@@ -196,7 +201,7 @@ private fun addTopicList(
     }
 }
 
-private fun deleteTotem(
+    fun deleteTotem(
     sensorViewModel: TotemsViewModel,
     totem: Totem,
     scope: CoroutineScope,
@@ -217,7 +222,7 @@ private fun deleteTotem(
     }
 }
 
-private fun sendWaterPumpPowerPayload(
+fun sendWaterPumpPowerPayload(
     mqttViewModel: MqttViewModel,
     item: Regador
 ) {
