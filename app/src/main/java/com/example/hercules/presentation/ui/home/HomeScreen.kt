@@ -76,76 +76,76 @@ fun HomeScreen(
         scaffoldState = scaffoldState
     )
     {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            HomeHeader(
-                isOrderSectionVisible = homeState.value.isOrderSectionVisible,
-                order = homeState.value.sensorOrder,
-                onToggleOrderButton = {
-                    //order button clicked
-                    totemsViewModel.onEvent(HomeEvents.OnToggleSectionOrder)
-                },
-                onOrderChange = {
-                    totemsViewModel.onEvent(HomeEvents.OnOrderChange(it))
-                },
-                headerTitle = stringResource(id = R.string.sensors_in_your_network)
-            )
+        Box(modifier = Modifier
+            .fillMaxSize()) {
+            Column() {
+                HomeHeader(
+                    isOrderSectionVisible = homeState.value.isOrderSectionVisible,
+                    order = homeState.value.sensorOrder,
+                    onToggleOrderButton = {
+                        //order button clicked
+                        totemsViewModel.onEvent(HomeEvents.OnToggleSectionOrder)
+                    },
+                    onOrderChange = {
+                        totemsViewModel.onEvent(HomeEvents.OnOrderChange(it))
+                    },
+                    headerTitle = stringResource(id = R.string.sensors_in_your_network)
+                )
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(homeState.value.totems) { item: Totem ->
-                    val deleteMsg: String
-                    val undoLabel = stringResource(R.string.undo)
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    items(homeState.value.totems) { item: Totem ->
+                        val deleteMsg: String
+                        val undoLabel = stringResource(R.string.undo)
 
-                    when (item.type) {
-                        TotemType.WATER_PUMP -> {
-                            deleteMsg = stringResource(id = R.string.water_pump_deleted)
-                            WaterPumpListItem(
-                                modifier = Modifier.fillMaxWidth(),
-                                regador = item as Regador,
-                                onButtonClicked = {
-                                    sendWaterPumpPowerPayload(mqttViewModel, item)
-                                },
-                                onDeleteButtonClicked = {
-                                    deleteTotem(
-                                        totemsViewModel,
-                                        it,
-                                        scope,
-                                        scaffoldState,
-                                        deleteMsg,
-                                        undoLabel
-                                    )
-                                },
-                                onRefreshButtonClicked = {
-                                    //TODO: send refresh totem payload
-                                }
-                            )
+                        when (item.type) {
+                            TotemType.WATER_PUMP -> {
+                                deleteMsg = stringResource(id = R.string.water_pump_deleted)
+                                WaterPumpListItem(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    regador = item as Regador,
+                                    onButtonClicked = {
+                                        sendWaterPumpPowerPayload(mqttViewModel, item)
+                                    },
+                                    onDeleteButtonClicked = {
+                                        deleteTotem(
+                                            totemsViewModel,
+                                            it,
+                                            scope,
+                                            scaffoldState,
+                                            deleteMsg,
+                                            undoLabel
+                                        )
+                                    },
+                                    onRefreshButtonClicked = {
+                                        //TODO: send refresh totem payload
+                                    }
+                                )
+                            }
+                            TotemType.MAG_SENSOR -> {
+                                deleteMsg = stringResource(id = R.string.sensor_deleted)
+                                MagneticSensor(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    magSensor = item as MagSensor,
+                                    onButtonClicked = {
+                                        Log.i(TAG, "HomeScreen: ALARM BUTTON CLICKED")
+                                        //TODO: send reset alarm payload
+                                    },
+                                    onDeleteButtonClicked = {
+                                        deleteTotem(
+                                            totemsViewModel,
+                                            it,
+                                            scope,
+                                            scaffoldState,
+                                            deleteMsg,
+                                            undoLabel
+                                        )
+                                    })
+                            }
                         }
-                        TotemType.MAG_SENSOR -> {
-                            deleteMsg = stringResource(id = R.string.sensor_deleted)
-                            MagneticSensor(
-                                modifier = Modifier.fillMaxWidth(),
-                                magSensor = item as MagSensor,
-                                onButtonClicked = {
-                                    Log.i(TAG, "HomeScreen: ALARM BUTTON CLICKED")
-                                    //TODO: send reset alarm payload
-                                },
-                                onDeleteButtonClicked = {
-                                    deleteTotem(
-                                        totemsViewModel,
-                                        it,
-                                        scope,
-                                        scaffoldState,
-                                        deleteMsg,
-                                        undoLabel
-                                    )
-                                })
-                        }
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
                 }
             }
         }

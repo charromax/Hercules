@@ -7,7 +7,7 @@ package com.example.hercules.data.remote.response
 import com.squareup.moshi.JsonReader
 
 enum class WaterCycles {
-    MANUAL, CYCLE, SCHEDULE
+    MANUAL, INTERVAL, SCHEDULE
 }
 
 data class WaterPumpPayload(

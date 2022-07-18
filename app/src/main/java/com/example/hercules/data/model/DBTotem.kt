@@ -35,6 +35,7 @@ data class DBTotem(
             TotemType.WATER_PUMP -> Regador.build(this)
             TotemType.MAG_SENSOR -> MagSensor.build(this)
             TotemType.AMBIENT_SENSOR -> TODO()
+            TotemType.RGB_STRIP_CONTROL -> TODO()
         }
     }
 }

@@ -46,6 +46,7 @@ object MqttManualParser {
             TotemType.WATER_PUMP -> WaterPumpPayload.buildPayload(json)
             TotemType.MAG_SENSOR -> MagSensorPayload.buildPayload(json)
             TotemType.AMBIENT_SENSOR -> AmbientSensorPayload.buildPayload(json)
+            TotemType.RGB_STRIP_CONTROL -> RgbStripControlPayload.buildPayload(json)
             else -> null
         }
         return payload

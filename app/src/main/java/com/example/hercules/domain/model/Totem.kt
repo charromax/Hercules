@@ -13,6 +13,7 @@ enum class TotemType(val icon: Int, val alias: String) {
     WATER_PUMP(R.drawable.ic_water_pump, "Regador"),
     MAG_SENSOR(R.drawable.ic_door_sensor, "Sensor Magnetico"),
     AMBIENT_SENSOR(R.drawable.ic_door_sensor, "Sensor Ambiental"),
+    RGB_STRIP_CONTROL(R.drawable.ic_door_sensor, "Control RGB"),
 }
 
 enum class BasicInstructionSet {
