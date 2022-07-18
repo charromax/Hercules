@@ -8,7 +8,6 @@ import com.example.hercules.data.model.DBTotem
 import com.example.hercules.data.remote.response.MagSensorPayload
 import com.example.hercules.data.remote.response.MqttManualParser
 
-
 class MagSensor(
     val data: Boolean,
     override val id: Int,

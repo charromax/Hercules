@@ -5,6 +5,7 @@
 package com.example.hercules.presentation.ui
 
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -19,6 +20,7 @@ sealed class Screen(val route: String) {
     object AddTotemScreen : Screen("add_totem_screen")
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @ExperimentalAnimationApi
 @Composable
 fun Navigation() {
