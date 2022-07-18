@@ -6,11 +6,11 @@ package com.example.hercules.presentation.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
@@ -21,9 +21,10 @@ fun BaseTotemCard(
     content: @Composable () -> Unit
 ) {
     val shape = MaterialTheme.shapes.small
-    Column(
+    Box(
         modifier = modifier
             .padding(8.dp)
+            .aspectRatio(1f)
             .border(
                 shape = shape,
                 width = 1.dp,
@@ -32,8 +33,8 @@ fun BaseTotemCard(
             .clip(shape)
             .background(
                 color = MaterialTheme.colors.surface,
-            ),
-        horizontalAlignment = Alignment.Start,
+            )
+            .padding(4.dp),
     ) {
         content()
     }

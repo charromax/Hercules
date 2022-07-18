@@ -5,10 +5,10 @@
 package com.example.hercules.presentation.ui.home.components.totems
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -30,7 +30,6 @@ const val TAG = "magnetic_sensor"
 @Composable
 fun MagneticSensor(
     magSensor: MagSensor,
-    modifier: Modifier = Modifier,
     onButtonClicked: (totem: Totem) -> Unit,
     onDeleteButtonClicked: (totem: Totem) -> Unit
 ) {
@@ -43,9 +42,9 @@ fun MagneticSensor(
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp)
+                    .padding(4.dp)
             ) {
                 Text(
                     text = magSensor.topic,
@@ -55,7 +54,7 @@ fun MagneticSensor(
                 )
 
                 Image(
-                    modifier = modifier
+                    modifier = Modifier
                         .clickable {
                             onDeleteButtonClicked.invoke(magSensor)
                         },
@@ -68,23 +67,23 @@ fun MagneticSensor(
                 text = checkIsActivated(magSensor.isActive),
                 style = MaterialTheme.typography.subtitle1,
                 color = MaterialTheme.colors.onSurface,
-                modifier = modifier.padding(horizontal = 8.dp)
+                modifier = Modifier.padding(horizontal = 8.dp)
             )
             Button(
                 onClick = {
                     onButtonClicked(magSensor)
                 },
-                modifier = modifier
-                    .padding(8.dp)
+                colors = ButtonDefaults.buttonColors(
+                    getSensorButtonColor(
+                        activation = magSensor.isActive,
+                        power = magSensor.powerState,
+                        isTriggered = magSensor.data
+                    )
+                ),
+                modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp)
-                    .background(
-                        color = getSensorButtonColor(
-                            magSensor.isActive,
-                            magSensor.powerState, magSensor.currentState?.data
-                        ),
-                        shape = MaterialTheme.shapes.small
-                    )
+                    .padding(4.dp)
             ) {
                 Text(
                     text = checkSensorPayload(magSensor.currentState),
