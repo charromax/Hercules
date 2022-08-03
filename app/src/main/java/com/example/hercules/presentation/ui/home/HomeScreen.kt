@@ -23,19 +23,23 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.hercules.R
+import com.example.hercules.data.remote.requests.LedStripControlRequest
 import com.example.hercules.domain.model.*
 import com.example.hercules.presentation.ui.Screen
 import com.example.hercules.presentation.ui.home.components.HomeHeader
+import com.example.hercules.presentation.ui.home.components.totems.LedStripControlItem
 import com.example.hercules.presentation.ui.home.components.totems.MagneticSensor
 import com.example.hercules.presentation.ui.home.components.totems.WaterPumpListItem
 import com.example.hercules.presentation.ui.mqtt.MqttEvents
 import com.example.hercules.presentation.ui.mqtt.MqttState
 import com.example.hercules.presentation.ui.mqtt.MqttViewModel
+import com.squareup.moshi.Moshi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -151,12 +155,37 @@ fun HomeScreen(
                                         )
                                     })
                             }
+                            TotemType.RGB_STRIP_CONTROL -> {
+                                LedStripControlItem(
+                                    totem = item as RgbStripControl,
+                                    onButtonClicked = { color: Color ->
+                                        sendColorPickerPayload(color, item, mqttViewModel)
+                                    },
+                                    onDeleteButtonClicked = { /*TODO*/ }
+                                )
+                            }
                         }
                     }
                 }
             }
         }
     }
+}
+
+fun sendColorPickerPayload(color: Color, totem: Totem, mqttViewModel: MqttViewModel) {
+    val moshi = Moshi.Builder().build()
+    val jsonAdapter = moshi.adapter(LedStripControlRequest::class.java)
+    val message = jsonAdapter.toJson(
+        LedStripControlRequest(
+            RgbMode.MANUAL,
+            4,
+            RangeChannel.R,
+            color.red.toInt(),
+            color.green.toInt(),
+            color.blue.toInt()
+        )
+    )
+    mqttViewModel.onEvent(MqttEvents.PublishMessage(totem.topic, message))
 }
 
 
@@ -201,7 +230,7 @@ fun addTopicList(
     }
 }
 
-    fun deleteTotem(
+fun deleteTotem(
     sensorViewModel: TotemsViewModel,
     totem: Totem,
     scope: CoroutineScope,
